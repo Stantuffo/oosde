@@ -1,4 +1,4 @@
-package com.univaq.oosde.entity;
+package com.univaq.oosde.model;
 import java.sql.Connection;
 import java.sql.DriverManager;
 

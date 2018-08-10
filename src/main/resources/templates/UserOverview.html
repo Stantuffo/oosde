@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html lang="it" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:object-fit="http://www.w3.org/1999/xhtml">
+<html lang="it" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Digital Library</title>
     <!--CSS-->
     <link th:href="@{/css/style.css}" rel="stylesheet">
-    <link th:href="@{/css/slick-theme.css}" rel="stylesheet">
-    <link th:href="@{/css/slick.css}" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
@@ -22,7 +20,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
             integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
             crossorigin="anonymous"></script>
-    <script th:src="@{/js/slick.js}" type="text/javascript"></script>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -54,18 +51,16 @@
         <nav class="col-3 bg-light sidebar">
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
-                    <li class="nav-item">
+                    <li class="nav-item rounded">
                         <a class="nav-link" href="/DigitalLibrary">
                             <i class="fas fa-home"></i>
                             Home
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item rounded" id="active">
                         <a class="nav-link" href="/DigitalLibrary/UserAccount">
                             <i class="fas fa-user"></i>
                             Anagrafica utente
-                            Transcriber<span th:text="${session.User.transcriber}"></span>
-                            Administrator <span th:text="${session.User.administrator}"></span>
                         </a>
                     </li>
                     <li th:if="${session.User.transcriber || session.User.administrator}" class="nav-item">
@@ -85,93 +80,29 @@
         </nav>
 
         <main class="col-9">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <h2>Opera</h2>
-                </div>
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+                <h2>Anagrafica Utente</h2>
             </div>
-            <div class="row">
-                <div class="col-12 text-center">
-                    <p>
-                    <h4 th:text="${artwork.title + ' (' + artwork.year + ')'}"></h4>
-                    <button class="btn btn-outline-dark" type="button" data-toggle="collapse"
-                            data-target="#collapseExample"
-                            aria-expanded="false" aria-controls="collapseExample" th:text="Info">
-                    </button>
-                    </p>
-                    <div class="collapse" id="collapseExample">
-                        <div class="card card-body">
-                            <div class="row">
-                                <div class="col-6 text-center">
-                                    <h5>Info sull'autore</h5>
-                                    <span th:text="${author.name + ' ' + author.surname}"></span>
-                                    <br>
-                                    <span th:text="${'Nato il ' + author.birth_date + ' a ' + author.birth_place + ', ' + author.birth_country}"></span>
-                                </div>
-                                <div class="col-6 border-left">
-                                    <h5>Descrizione dell'opera</h5>
-                                    <span th:text="${artwork.description}"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                </div>
-            </div>
-            <div class="slider-for">
-                <div class="row" th:each="page : ${pages}">
-                    <div class="row">
-                        <div class="col-6">
-                            <img class="image-fluid resizable rounded"
-                                 th:src="@{${'/' + artwork.id + '/' + page.img_url}}"
-                                 alt="">
-                        </div>
-                        <div class="col-6">
-                            <div class="card">
-                                <div class="card-body">
-                                    <p class="descr card-text" th:utext="${page.transcription}"></p>
-                                </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title" th:text="${session.User.name + ' ' + session.User.surname}"></h5>
+                                <p class="card-text" th:text="${session.User.email}"></p>
+                                <p class="card-text" th:text="${session.User.birth_date}"></p>
+                                <p class="card-text" th:text="${session.User.residency}"></p>
+                                <p class="card-text" th:text="${session.User.qualification}"></p>
+                                <p class="card-text" th:text="${session.User.profession}"></p>
+                                <p class="card-text" th:text="${session.User.fiscal_code}"></p>
+                                <a href="#" class="btn btn-primary">Go somewhere</a>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="slider-nav">
-                <div class="row" th:each="page : ${pages}">
-                    <div>
-                        <img class="image-fluid img-thumb" th:src="@{${'/' + artwork.id + '/' + page.img_url}}"
-                             alt="">
-                    </div>
-                </div>
-            </div>
-            <div th:if="${session.User.downloader}" class="row text-center">
-                <button value="" class="btn btn-outline-primary">Scarica l'Opera</button>
             </div>
         </main>
     </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('.slider-for').slick({
-            autoplay: false,
-            slidesToShow: 1,
-            slidesToScroll: 1,
-            centerMode: true,
-            arrows: true,
-            fade: true,
-            adaptiveHeight: true,
-            accessibility: true,
-            asNavFor: '.slider-nav'
-        });
-        $('.slider-nav').slick({
-            slidesToShow: 3,
-            slidesToScroll: 1,
-            asNavFor: '.slider-for',
-            dots: true,
-            centerMode: true,
-            focusOnSelect: true
-        });
-    });
-</script>
 </body>
 </html>

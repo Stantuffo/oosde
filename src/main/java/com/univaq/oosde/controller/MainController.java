@@ -1,13 +1,10 @@
 package com.univaq.oosde.controller;
 
-import com.univaq.oosde.entity.ConnectionClass;
-import com.univaq.oosde.entity.artwork;
-import com.univaq.oosde.entity.user;
+import com.univaq.oosde.model.ConnectionClass;
+import com.univaq.oosde.model.Artwork;
+import com.univaq.oosde.model.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +19,7 @@ import java.util.List;
 public class MainController {
     /*@Autowired
     private AreaModel areaModel;*/
-    @RequestMapping("/oosde")
+    @RequestMapping("/DigitalLibrary")
     public ModelAndView main(HttpServletRequest request) throws SQLException {
         //DA AGGIUNGERE//
         /*HttpSession session = request.getSession();
@@ -39,12 +36,14 @@ public class MainController {
         HttpSession session = request.getSession(true);
         ResultSet resultSet = statement.executeQuery(sql);
         if (resultSet.next()) {
-            user user = new user(resultSet);
+            User user = new User(resultSet);
             session.setAttribute("User", user);
         }
         //FIN QUI//
-        artwork a = new artwork();
-        List<artwork> artworks = a.getNameIdAllOperas();
+        User user = (User) session.getAttribute("User");
+        Artwork a = new Artwork();
+        boolean flag = (user.isAdministrator() || user.isManager());
+        List<Artwork> artworks = a.getAllOperas(flag);
         ModelAndView mav = new ModelAndView("DigitalLibrary");
         mav.addObject("artworks", artworks);
         return mav;

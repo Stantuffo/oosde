@@ -23,7 +23,7 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="/oosde">
+    <a class="navbar-brand" href="/DigitalLibrary">
         <img th:src="@{logo.png}" width="30" height="30" class="d-inline-block align-top" alt="">
         Digital Library
     </a>
@@ -36,7 +36,7 @@
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
                 <a class="nav-link disabled">Ciao, <span
-                        th:text="${session.User.nome + ' ' + session.User.cognome}"
+                        th:text="${session.User.name + ' ' + session.User.surname}"
                         th:unless="${session == null}"></span></a>
             </li>
         </ul>
@@ -48,29 +48,29 @@
 </nav>
 <div class="container-fluid">
     <div class="row">
-        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+        <nav class="col-3 bg-light sidebar">
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
-                    <li class="nav-item rounded">
-                        <a class="nav-link" href="/oosde">
+                    <li class="nav-item rounded" id="active">
+                        <a class="nav-link" href="/DigitalLibrary">
                             <i class="fas fa-home"></i>
                             Home
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/oosde/DigitalLibrary/UserAccount">
+                        <a class="nav-link" href="/DigitalLibrary/UserAccount">
                             <i class="fas fa-user"></i>
                             Anagrafica utente
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/oosde/DigitalLibrary/UserAccount">
+                    <li th:if="${session.User.transcriber || session.User.administrator}" class="nav-item">
+                        <a class="nav-link" href="/DigitalLibrary/MyTranscriptions">
                             <i class="fas fa-fas fa-edit"></i>
                             Trascrizioni Assegnate
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/oosde/DigitalLibrary/UserAccount">
+                    <li th:if="${session.User.manager || session.User.administrator}" class="nav-item">
+                        <a class="nav-link" href="/DigitalLibrary/NewArtwork">
                             <i class="fas fa-plus-square"></i>
                             Aggiungi Opera
                         </a>
@@ -79,7 +79,7 @@
             </div>
         </nav>
 
-        <main class="col-md-9 ml-sm-auto col-lg-10 px-4">
+        <main class="col-9">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
                 <h2>Opere</h2>
             </div>
@@ -88,16 +88,20 @@
                     <thead>
                     <tr>
                         <th>ISBN</th>
-                        <th>TITOLO</th>
+                        <th class="th-col-3">TITOLO</th>
                         <th>DESCRIZIONE</th>
+                        <th th:if="${session.User.administrator || session.User.manager}">PUBBLICATO</th>
                     </tr>
                     </thead>
                     <tbody>
 
                     <tr th:each="art : ${artworks}">
                         <td th:text="${art.isbn}"></td>
-                        <td><a th:href="@{'/oosde/DigitalLibrary/opera?id='+${art.id}}" th:text="${art.title}"></a></td>
-                        <td th:text="${art.description}"></td>
+                        <td><a th:href="@{'/DigitalLibrary/Opera?artId='+${art.id}}" th:text="${art.title}"></a></td>
+                        <td th:text="${art.description}" class="text-justify"></td>
+                        <td th:if="${session.User.administrator || session.User.manager}" class="text-center">
+                            <i th:class="${art.published}? 'fas fa-check green' : 'fas fa-times red'"></i>
+                        </td>
                     </tr>
                     </tbody>
                 </table>

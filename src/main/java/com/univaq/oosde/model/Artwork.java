@@ -1,4 +1,4 @@
-package com.univaq.oosde.entity;
+package com.univaq.oosde.model;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -7,14 +7,15 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
-public class artwork {
-    private int id, year, cat_id;
-    private String isbn, title, description, language, img_url;
+public class Artwork {
+    private int id, year, cat_id, author_id;
+    private String isbn, title, description, language;
+    private boolean published;
 
-    public artwork() {
+    public Artwork() {
     }
 
-    public artwork(artwork other) {
+    public Artwork(Artwork other) {
         this.id = other.getId();
         this.year = other.getYear();
         this.cat_id = other.getCat_id();
@@ -22,10 +23,11 @@ public class artwork {
         this.title = other.getTitle();
         this.description = other.getDescription();
         this.language = other.getLanguage();
-        this.img_url = other.getImg_url();
+        this.author_id = other.getAuthor_id();
+        this.published = other.isPublished();
     }
 
-    public artwork(int id, int year, int cat_id, String isbn, String title, String description, String language, String img_url) {
+    public Artwork(int id, int year, int cat_id, String isbn, String title, String description, String language, String img_url, int author_id, boolean published) {
         this.id = id;
         this.year = year;
         this.cat_id = cat_id;
@@ -33,10 +35,11 @@ public class artwork {
         this.title = title;
         this.description = description;
         this.language = language;
-        this.img_url = img_url;
+        this.author_id = author_id;
+        this.published = published;
     }
 
-    public artwork(ResultSet resultSet) throws SQLException {
+    public Artwork(ResultSet resultSet) throws SQLException {
         this.setId(resultSet.getInt("art_id"));
         this.setIsbn(resultSet.getString("isbn"));
         this.setTitle(resultSet.getString("title"));
@@ -44,7 +47,8 @@ public class artwork {
         this.setLanguage(resultSet.getString("language"));
         this.setYear(resultSet.getInt("year"));
         this.setCat_id(resultSet.getInt("cat_id"));
-        this.setImg_url(resultSet.getString("artwork_main_img_url"));
+        this.setAuthor_id(resultSet.getInt("author_id"));
+        this.setPublished(resultSet.getBoolean("published"));
     }
 
     public int getId() {
@@ -103,36 +107,55 @@ public class artwork {
         this.language = language;
     }
 
-    public String getImg_url() {
-        return img_url;
+    public int getAuthor_id() {
+        return author_id;
     }
 
-    public void setImg_url(String img_url) {
-        this.img_url = img_url;
+    public void setAuthor_id(int author_id) {
+        this.author_id = author_id;
     }
 
-    public List<artwork> getNameIdAllOperas() throws SQLException {
+    public boolean isPublished() {
+        return published;
+    }
+
+    public void setPublished(boolean published) {
+        this.published = published;
+    }
+
+    public List<Artwork> getAllOperas(boolean admin) throws SQLException {
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();
         Statement statement = connection.createStatement();
-        String sql = "SELECT * FROM artwork";
+        String sql;
+        if (!admin) {
+            sql = "SELECT * FROM artwork WHERE published = 1";
+        } else {
+            sql = "SELECT * FROM artwork order by published ASC";
+        }
         ResultSet resultSet = statement.executeQuery(sql);
-        List<artwork> arts = new LinkedList<>();
+        List<Artwork> arts = new LinkedList<>();
         while (resultSet.next()) {
-            artwork art = new artwork(resultSet);
+            Artwork art = new Artwork(resultSet);
             arts.add(art);
         }
         return arts;
     }
 
-    public static artwork getArtworkById(int id) throws SQLException {
+    public static Artwork getArtworkById(int id) throws SQLException {
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();
         Statement statement = connection.createStatement();
-        String sql = "SELECT * FROM artwork WHERE art_id = "+ id;
+        String sql = "SELECT * FROM artwork WHERE art_id = " + id;
         ResultSet resultSet = statement.executeQuery(sql);
         resultSet.next();
-        artwork art = new artwork(resultSet);
+        Artwork art = new Artwork(resultSet);
         return art;
+    }
+
+    public List<Image> getPagesOfOpera(int artId) throws SQLException {
+        Image img = new Image();
+        List<Image> pages = img.getPagesByArtworkId(artId);
+        return pages;
     }
 }

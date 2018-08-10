@@ -1,7 +1,7 @@
 package com.univaq.oosde.controller;
 
-import com.univaq.oosde.entity.ConnectionClass;
-import com.univaq.oosde.entity.user;
+import com.univaq.oosde.model.ConnectionClass;
+import com.univaq.oosde.model.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,7 +20,7 @@ import java.sql.Statement;
 @Controller
 public class LoginController {
 
-    @RequestMapping(value = "/oosde/login", method = RequestMethod.POST)
+    @RequestMapping(value = "/DigitalLibrary/login", method = RequestMethod.POST)
     public String login(@RequestParam("email") String email, @RequestParam("password") String password) throws SQLException {
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();
@@ -32,21 +32,21 @@ public class LoginController {
         HttpSession session = request.getSession(true);
         ResultSet resultSet = statement.executeQuery(sql);
         if (resultSet.next()) {
-            user user = new user(resultSet);
+            User user = new User(resultSet);
             session.setAttribute("User", user);
-            return "redirect:/oosde";
+            return "redirect:/DigitalLibrary";
 
         } else {
             session.setAttribute("Errore", true);
             //ERRORE - Utente non trovato nel db
             //Redirect alla main page che rimanderà alla login
         }
-        return "redirect:/oosde";
+        return "redirect:/DigitalLibrary";
     }
 
-    @RequestMapping(value = "/oosde/login", method = RequestMethod.GET)
+    @RequestMapping(value = "/DigitalLibrary/login", method = RequestMethod.GET)
     public String login() {
-        return "redirect:/oosde";
+        return "redirect:/DigitalLibrary";
     }
 }
 

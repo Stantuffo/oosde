@@ -64,8 +64,6 @@
                         <a class="nav-link" href="/DigitalLibrary/UserAccount">
                             <i class="fas fa-user"></i>
                             Anagrafica utente
-                            Transcriber<span th:text="${session.User.transcriber}"></span>
-                            Administrator <span th:text="${session.User.administrator}"></span>
                         </a>
                     </li>
                     <li th:if="${session.User.transcriber || session.User.administrator}" class="nav-item">
@@ -74,7 +72,8 @@
                             Trascrizioni Assegnate
                         </a>
                     </li>
-                    <li th:if="${session.User.manager || session.User.administrator}" class="nav-item">
+                    <li th:if="${session.User.manager || session.User.administrator}" class="nav-item rounded"
+                        id="active">
                         <a class="nav-link" href="/DigitalLibrary/NewArtwork">
                             <i class="fas fa-plus-square"></i>
                             Aggiungi Opera
@@ -85,93 +84,63 @@
         </nav>
 
         <main class="col-9">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <h2>Opera</h2>
-                </div>
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+                <h2>Aggiungi Nuova Opera</h2>
             </div>
-            <div class="row">
-                <div class="col-12 text-center">
-                    <p>
-                    <h4 th:text="${artwork.title + ' (' + artwork.year + ')'}"></h4>
-                    <button class="btn btn-outline-dark" type="button" data-toggle="collapse"
-                            data-target="#collapseExample"
-                            aria-expanded="false" aria-controls="collapseExample" th:text="Info">
-                    </button>
-                    </p>
-                    <div class="collapse" id="collapseExample">
-                        <div class="card card-body">
-                            <div class="row">
-                                <div class="col-6 text-center">
-                                    <h5>Info sull'autore</h5>
-                                    <span th:text="${author.name + ' ' + author.surname}"></span>
-                                    <br>
-                                    <span th:text="${'Nato il ' + author.birth_date + ' a ' + author.birth_place + ', ' + author.birth_country}"></span>
+            <div class="container">
+                <div class="row ml-4 mr-4">
+                    <div class="col-12">
+                        <!--inserire form-->
+
+                        <form action="/DigitalLibrary/AddOpera" method="POST">
+                            <div class="form-row">
+                                <div class="form-group col 12">
+                                    <label for="inputTitle"><strong>Titolo dell'Opera</strong></label>
+                                    <input type="text" class="form-control" id="inputTitle"
+                                           placeholder="Inserisci il titolo dell'Opera" required>
                                 </div>
-                                <div class="col-6 border-left">
-                                    <h5>Descrizione dell'opera</h5>
-                                    <span th:text="${artwork.description}"></span>
+                                <div class="form-group col-12">
+                                    <label for="inputDescription"><strong>Descrizione</strong></label><span class="red"> *opzionale</span>
+                                    <textarea class="form-control" id="inputDescription"
+                                              placeholder="Inserisci una descrizione dell'Opera"></textarea>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <hr>
-                </div>
-            </div>
-            <div class="slider-for">
-                <div class="row" th:each="page : ${pages}">
-                    <div class="row">
-                        <div class="col-6">
-                            <img class="image-fluid resizable rounded"
-                                 th:src="@{${'/' + artwork.id + '/' + page.img_url}}"
-                                 alt="">
-                        </div>
-                        <div class="col-6">
-                            <div class="card">
-                                <div class="card-body">
-                                    <p class="descr card-text" th:utext="${page.transcription}"></p>
+
+                            <div class="form-row">
+                                <div class="form-group col-4">
+                                    <label for="isbn"><strong>Codice ISBN</strong></label><span
+                                        class="red"> *opzionale</span>
+                                    <input type="text" class="form-control" id="isbn"
+                                           placeholder="Inserisci un codice ISBN">
+                                </div>
+                                <div class="form-group col-4">
+                                    <label for="language"><strong>Lingua dell'opera</strong></label>
+                                    <select id="language" class="form-control">
+                                        <option selected>IT</option>
+                                        <option>LAT</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-4">
+                                    <label for="inputYear"><strong>Anno dell'Opera</strong></label><span class="red"> *opzionale</span>
+                                    <input type="number" class="form-control" id="inputYear"
+                                           placeholder="Inserisci la datazione dell'Opera" min="1000" max="2000">
                                 </div>
                             </div>
-                        </div>
+                            <div class="form-row">
+                                <div class="form-group col-4">
+                                    <label for="category">Categoria</label>
+                                    <select id="category" class="form-control" th:each="category : ${categoryList}">
+                                        <option th:value="${category.id}" th:text="${category.name}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Aggiungi</button>
+                        </form>
                     </div>
                 </div>
-            </div>
-            <div class="slider-nav">
-                <div class="row" th:each="page : ${pages}">
-                    <div>
-                        <img class="image-fluid img-thumb" th:src="@{${'/' + artwork.id + '/' + page.img_url}}"
-                             alt="">
-                    </div>
-                </div>
-            </div>
-            <div th:if="${session.User.downloader}" class="row text-center">
-                <button value="" class="btn btn-outline-primary">Scarica l'Opera</button>
             </div>
         </main>
     </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('.slider-for').slick({
-            autoplay: false,
-            slidesToShow: 1,
-            slidesToScroll: 1,
-            centerMode: true,
-            arrows: true,
-            fade: true,
-            adaptiveHeight: true,
-            accessibility: true,
-            asNavFor: '.slider-nav'
-        });
-        $('.slider-nav').slick({
-            slidesToShow: 3,
-            slidesToScroll: 1,
-            asNavFor: '.slider-for',
-            dots: true,
-            centerMode: true,
-            focusOnSelect: true
-        });
-    });
-</script>
 </body>
 </html>
