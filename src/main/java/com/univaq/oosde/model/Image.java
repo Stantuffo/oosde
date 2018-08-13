@@ -32,10 +32,10 @@ public class Image {
     }
 
     //Getters and Setters
+
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
@@ -76,5 +76,18 @@ public class Image {
             pages.add(img);
         }
         return pages;
+    }
+
+    public static Image getImageById(int imgId) throws SQLException {
+        ConnectionClass connectionClass = new ConnectionClass();
+        Connection connection = connectionClass.getConnection();
+        Statement statement = connection.createStatement();
+        String sql = "SELECT * FROM image WHERE img_id =" + imgId;
+        ResultSet resultSet = statement.executeQuery(sql);
+        if (resultSet.next()) {
+            Image img = new Image(resultSet);
+            return img;
+        }
+        return null;
     }
 }

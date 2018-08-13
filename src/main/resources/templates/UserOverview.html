@@ -1,85 +1,125 @@
 <!DOCTYPE html>
 <html lang="it" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title>Digital Library</title>
-    <!--CSS-->
-    <link th:href="@{/css/style.css}" rel="stylesheet">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
-          integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <head>
+        <meta charset="UTF-8">
+        <title>Digital Library</title>
+        <!--CSS-->
+        <link th:href="@{/css/style.css}" rel="stylesheet">
+        <link th:href="@{/css/style2.css}" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+              integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
+              integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 
-    <!--JS-->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-            crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-            crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-            crossorigin="anonymous"></script>
-</head>
+        <!--JS-->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+                integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+                crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+                integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+                crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+                integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+                crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+    </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="/DigitalLibrary">
-        <img th:src="@{/logo.png}" width="30" height="30" class="d-inline-block align-top" alt="">
-        Digital Library
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link disabled">Ciao, <span
-                        th:text="${session.User.name + ' ' + session.User.surname}"
-                        th:unless="${session == null}"></span></a>
+<!--START-->
+<div class="wrapper">
+    <!-- Sidebar  -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3>
+                <a class="navbar-brand" href="/DigitalLibrary">
+                    <img th:src="@{/logo.png}" width="30" height="30" class="d-inline-block align-top" alt="">
+                    Digital Library
+                </a>
+            </h3>
+        </div>
+        <ul class="list-unstyled components">
+            <p>Intestazione Menù</p>
+            <li>
+                <a href="/DigitalLibrary">
+                    <i class="fas fa-home"></i>
+                    Home
+                </a>
             </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
-    </div>
-</nav>
-<div class="container-fluid">
-    <div class="row">
-        <nav class="col-3 bg-light sidebar">
-            <div class="sidebar-sticky">
-                <ul class="nav flex-column">
-                    <li class="nav-item rounded">
-                        <a class="nav-link" href="/DigitalLibrary">
-                            <i class="fas fa-home"></i>
-                            Home
-                        </a>
-                    </li>
-                    <li class="nav-item rounded" id="active">
-                        <a class="nav-link" href="/DigitalLibrary/UserAccount">
-                            <i class="fas fa-user"></i>
-                            Anagrafica utente
-                        </a>
-                    </li>
-                    <li th:if="${session.User.transcriber || session.User.administrator}" class="nav-item">
-                        <a class="nav-link" href="/DigitalLibrary/MyTranscriptions">
-                            <i class="fas fa-fas fa-edit"></i>
-                            Trascrizioni Assegnate
-                        </a>
-                    </li>
-                    <li th:if="${session.User.manager || session.User.administrator}" class="nav-item">
-                        <a class="nav-link" href="/DigitalLibrary/NewArtwork">
-                            <i class="fas fa-plus-square"></i>
-                            Aggiungi Opera
-                        </a>
+            <li class="active">
+                <a href="/DigitalLibrary/UserAccount">
+                    <i class="fas fa-user"></i>
+                    Anagrafica utente
+                </a>
+            </li>
+            <li th:if="${session.User.transcriber || session.User.administrator}">
+                <a class="nav-link" href="/DigitalLibrary/MyTranscriptions">
+                    <i class="fas fa-fas fa-edit"></i>
+                    Trascrizioni Assegnate
+                </a>
+            </li>
+            <li th:if="${session.User.manager || session.User.administrator}">
+                <a class="nav-link" href="/DigitalLibrary/NewArtwork">
+                    <i class="fas fa-book"></i>
+                    Aggiungi Opera
+                </a>
+            </li>
+            <li th:if="${session.User.manager || session.User.administrator}">
+                <a class="nav-link" href="/DigitalLibrary/NewAuthor">
+                    <i class="fa user-plus"></i>
+                    Aggiungi Autore
+                </a>
+            </li>
+            <li th:if="${session.User.manager || session.User.administrator}">
+                <a class="nav-link" href="/DigitalLibrary/NewAuthor">
+                    <i class="fas fa-tags"></i>
+                    Aggiungi Tag ad un'Opera
+                </a>
+            </li>
+            <li>
+                <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Menù</a>
+                <ul class="collapse list-unstyled" id="pageSubmenu">
+                    <li>
+                        <a href="#">Sottomenù 1</a>
                     </li>
                 </ul>
+            </li>
+        </ul>
+    </nav>
+    <!-- Page Content  -->
+    <div id="content">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-0">
+            <div class="container-fluid">
+                <button type="button" id="sidebarCollapse" class="btn btn-info-dl">
+                    <i class="fas fa-arrow-circle-left" id="sidebar-arrow"></i><span id="info"> Minimizza</span>
+                </button>
+                <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fas fa-align-justify"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="mt-2 mr-4">
+                        <span class="text-white">Ciao,
+                            <span class="text-white" th:text="${session.User.name + ' ' + session.User.surname}"
+                                  th:unless="${session == null}"></span>
+                        </span>
+                        </li>
+                        <li>
+                            <form class="form-inline my-2 my-lg-0">
+                                <input class="form-control mr-sm-2" type="search" placeholder="Search"
+                                       aria-label="Search">
+                                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </nav>
-
-        <main class="col-9">
+        <!--CONTENUTO!!!!!-->
+        <main>
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
                 <h2>Anagrafica Utente</h2>
             </div>
@@ -102,7 +142,37 @@
                 </div>
             </div>
         </main>
+        <!--END CONTENUTO!!!!!-->
     </div>
 </div>
+<!--END-->
 </body>
+<script th:inline="javascript" type="text/javascript">
+    $(document).ready(function () {
+        $verso = 0;
+        $("#sidebar").mCustomScrollbar({
+            theme: "minimal"
+        });
+        $a = 180;
+        jQuery.fn.extend({
+            rotate: function (a) {
+                $('#sidebar-arrow').css({'transform': 'rotate(' + a + 'deg)'});
+                if ($('#info').text() === ' Minimizza') {
+                    $('#info').text(' Massimizza');
+                }
+                else {
+                    $('#info').text(' Minimizza');
+                }
+                $a += 180;
+                return $(this);
+            }
+        });
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar, #content').toggleClass('active');
+            $('.collapse.in').toggleClass('in');
+            $('a[aria-expanded=true]').attr('aria-expanded', 'false');
+            $('#sidebar-arrow').rotate($a);
+        });
+    })
+</script>
 </html>

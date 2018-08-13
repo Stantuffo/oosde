@@ -43,7 +43,7 @@ public class MainController {
         User user = (User) session.getAttribute("User");
         Artwork a = new Artwork();
         boolean flag = (user.isAdministrator() || user.isManager());
-        List<Artwork> artworks = a.getAllOperas(flag);
+        List<Artwork> artworks = a.getAllArtworks(flag);
         ModelAndView mav = new ModelAndView("DigitalLibrary");
         mav.addObject("artworks", artworks);
         return mav;

@@ -11,14 +11,15 @@ public class Category {
     private int id;
     private String name;
 
-    public Category() { }
+    public Category() {
+    }
 
     public Category(int id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Category(Category other){
+    public Category(Category other) {
         this.id = other.getId();
         this.name = other.getName();
     }
@@ -28,13 +29,21 @@ public class Category {
         this.setName(resultSet.getString("name"));
     }
 
-    public int getId() { return id; }
+    public int getId() {
+        return id;
+    }
 
-    public void setId(int id) { this.id = id; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public List<Category> getCategoryList() throws SQLException {
         ConnectionClass connectionClass = new ConnectionClass();
@@ -48,5 +57,17 @@ public class Category {
             catList.add(cat);
         }
         return catList;
+    }
+
+    public static String getCategoryNameById(int catId) throws SQLException {
+        ConnectionClass connectionClass = new ConnectionClass();
+        Connection connection = connectionClass.getConnection();
+        Statement statement = connection.createStatement();
+        String sql = "SELECT name FROM category WHERE cat_id ='" + catId + "'";
+        ResultSet resultSet = statement.executeQuery(sql);
+        if (resultSet.next()) {
+            return resultSet.getString("name");
+        }
+        return null;
     }
 }

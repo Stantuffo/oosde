@@ -105,7 +105,7 @@ public class Author {
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();
         Statement statement = connection.createStatement();
-        String sql = "SELECT * FROM author";
+        String sql = "SELECT * FROM author ORDER BY surname";
         ResultSet resultSet = statement.executeQuery(sql);
         List<Author> authorList = new LinkedList<>();
         while (resultSet.next()) {

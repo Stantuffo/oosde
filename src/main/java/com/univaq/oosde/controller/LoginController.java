@@ -20,7 +20,7 @@ import java.sql.Statement;
 @Controller
 public class LoginController {
 
-    @RequestMapping(value = "/DigitalLibrary/login", method = RequestMethod.POST)
+    @RequestMapping(value = "/DigitalLibrary/Login", method = RequestMethod.POST)
     public String login(@RequestParam("email") String email, @RequestParam("password") String password) throws SQLException {
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();
@@ -44,7 +44,7 @@ public class LoginController {
         return "redirect:/DigitalLibrary";
     }
 
-    @RequestMapping(value = "/DigitalLibrary/login", method = RequestMethod.GET)
+    @RequestMapping(value = "/DigitalLibrary/Login", method = RequestMethod.GET)
     public String login() {
         return "redirect:/DigitalLibrary";
     }

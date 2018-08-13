@@ -240,3 +240,35 @@ body {
 .th-col-3{
     width: 20%!important;
 }
+
+.fixed-height{
+    height: 40vw!important;
+    overflow: hidden;
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.centering{
+    color: white;
+    background-color: rgba(51, 51, 51, 0.75);
+    position: absolute;
+    top: 46%;
+    left: 8vw;
+    transition: background-color ease-in-out;
+    transition-duration: 300ms;
+}
+
+.centering:hover{
+    color: white;
+    background-color: rgba(51, 51, 51, 0.93);
+    transition: background-color ease-in-out;
+    transition-duration: 300ms;
+}
+
+.border-bottom{
+    border-bottom: 1px solid black;
+}

@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:object-fit="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Digital Library</title>
+</head>
+<body>
+    <img class="image-fluid resizable rounded" th:src="@{${'/' + img.artwork_id + '/' + img.img_url}}">
+</body>
+</html>

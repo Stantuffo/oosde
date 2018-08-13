@@ -1,11 +1,13 @@
 package com.univaq.oosde.model;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeMap;
 
 public class User {
     private int id;
@@ -275,12 +277,25 @@ public class User {
         return downloaderList;
     }
 
-    public ResultSet getTranscriptionList(int userId) throws SQLException{
+    public ResultSet getTranscriptionList(int userId) throws SQLException {
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();
         Statement statement = connection.createStatement();
-        String sql = "SELECT a.art_id, a.title, COUNT(i.img_id) AS numero_pagine FROM artwork AS a INNER JOIN image AS i ON a.art_id = i.artwork_id INNER JOIN write_assignment AS w ON i.img_id = w.image_id WHERE w.user_id = 1 GROUP BY a.art_id";
+        String sql = "SELECT a.art_id, a.title, COUNT(i.img_id) AS numero_pagine FROM artwork AS a INNER JOIN image AS i ON a.art_id = i.artwork_id INNER JOIN write_assignment AS w ON i.img_id = w.image_id WHERE w.user_id ='" + userId + "'GROUP BY a.art_id";
         ResultSet resultSet = statement.executeQuery(sql);
         return resultSet;
+    }
+
+    public TreeMap<Integer, String> getTranscriptionListByArtId(int artId, int userId) throws SQLException {
+        ConnectionClass connectionClass = new ConnectionClass();
+        Connection connection = connectionClass.getConnection();
+        Statement statement = connection.createStatement();
+        TreeMap<Integer, String> imgMap = new TreeMap<>();
+        String sql = "SELECT i.img_id, i.image_url FROM image AS i INNER JOIN write_assignment AS w ON i.img_id = w.image_id WHERE i.artwork_id ='" + artId + "'AND w.user_id = '" + userId + "'";
+        ResultSet resultSet = statement.executeQuery(sql);
+        while (resultSet.next()) {
+            imgMap.put(resultSet.getInt("img_id"), resultSet.getString("image_url"));
+        }
+        return imgMap;
     }
 }

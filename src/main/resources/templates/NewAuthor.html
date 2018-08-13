@@ -59,13 +59,13 @@
                     Trascrizioni Assegnate
                 </a>
             </li>
-            <li class="active" th:if="${session.User.manager || session.User.administrator}">
+            <li th:if="${session.User.manager || session.User.administrator}">
                 <a class="nav-link" href="/DigitalLibrary/NewArtwork">
                     <i class="fas fa-book"></i>
                     Aggiungi Opera
                 </a>
             </li>
-            <li th:if="${session.User.manager || session.User.administrator}">
+            <li class="active" th:if="${session.User.manager || session.User.administrator}">
                 <a class="nav-link" href="/DigitalLibrary/NewAuthor">
                     <i class="fas fa-user-plus"></i>
                     Aggiungi Autore
@@ -121,58 +121,41 @@
         <!--CONTENUTO!!!!!-->
         <main>
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-                <h2>Aggiungi Nuova Opera</h2>
+                <h2>Aggiungi Nuovo Autore</h2>
             </div>
             <div class="container">
                 <div class="row ml-4 mr-4">
                     <div class="col-12">
                         <!--inserire form-->
 
-                        <form action="/DigitalLibrary/AddArtwork" method="POST">
+                        <form action="/DigitalLibrary/AddAuthor" method="POST">
                             <div class="form-row">
-                                <div class="form-group col 12">
-                                    <label for="inputTitle"><strong>Titolo dell'Opera</strong></label>
-                                    <input type="text" class="form-control" id="inputTitle" name="inputTitle"
-                                           placeholder="Inserisci il titolo dell'Opera" required>
+                                <div class="form-group col-6">
+                                    <label for="inputName"><strong>Nome</strong></label>
+                                    <input type="text" class="form-control" id="inputName" name="inputName"
+                                           placeholder="Nome dell'Autore" required>
                                 </div>
-                                <div class="form-group col-12">
-                                    <label for="inputDescription"><strong>Descrizione</strong></label><span class="red"> *</span>
-                                    <textarea class="form-control" id="inputDescription" name="inputDescription"
-                                              placeholder="Inserisci una descrizione dell'Opera"></textarea>
+                                <div class="form-group col-6">
+                                    <label for="inputSurname"><strong>Cognome</strong></label>
+                                    <input type="text" class="form-control" id="inputSurname" name="inputSurname"
+                                              placeholder="Cognome dell'Autore" required>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-4">
-                                    <label for="inputIsbn"><strong>Codice ISBN</strong></label><span class="red"> *</span>
-                                    <input type="text" class="form-control" id="inputIsbn" name="inputIsbn"
-                                           placeholder="Inserisci un codice ISBN">
+                                    <label for="inputBirthDate"><strong>Data di Nascita</strong></label><span class="red"> *</span>
+                                    <input type="date" class="form-control" id="inputBirthDate" name="inputBirthDate"
+                                           placeholder="Data di Nascita">
                                 </div>
                                 <div class="form-group col-4">
-                                    <label for="inputYear"><strong>Anno Opera</strong></label><span class="red"> *</span>
-                                    <input type="number" class="form-control" id="inputYear" name="inputYear"
-                                           placeholder="Inserisci la datazione dell'Opera" min="1000" max="2000" value="1500">
+                                    <label for="inputBirthPlace"><strong>Città Natale</strong></label><span class="red"> *</span>
+                                    <input type="text" class="form-control" id="inputBirthPlace" name="inputBirthPlace"
+                                           placeholder="Città di Nascita">
                                 </div>
                                 <div class="form-group col-4">
-                                    <label for="inputLanguage"><strong>Lingua dell'opera</strong></label>
-                                    <select id="inputLanguage" name="inputLanguage" class="form-control">
-                                        <option value="IT" selected>IT</option>
-                                        <option value="LAT">LAT</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-6">
-                                    <label for="inputCategory"><strong>Categoria</strong></label>
-                                    <select id="inputCategory" name="inputCategory" class="form-control">
-                                        <option th:each="category : ${categoryList}" th:value="${category.id}" th:text="${category.name}"></option>
-                                    </select>
-                                </div>
-                                <div class="form-group col-6">
-                                    <label for="inputAuthors"><strong>Autore / Autori</strong></label><a href="/DigitalLibrary/NewAuthor" class=" ml-2 mb-1 pt-0 pb-0 btn btn-sm btn-primary">
-                                    <i class="fas fa-user-plus"></i> Nuovo Autore</a>
-                                    <select multiple id="inputAuthors" name="inputAuthors" class="form-control">
-                                        <option th:each="author : ${authorList}" th:value="${author.id}" th:text="${author.name + ' ' + author.surname}"></option>
-                                    </select>
+                                    <label for="inputBirthCountry"><strong>Paese Natale</strong></label><span class="red"> *</span>
+                                    <input type="text" class="form-control" id="inputBirthCountry" name="inputBirthCountry"
+                                           placeholder="Paese di Origine">
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-primary">Aggiungi</button>

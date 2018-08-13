@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Artwork {
-    private int id, year, cat_id, author_id;
+    private int id, year, cat_id;
     private String isbn, title, description, language;
     private boolean published;
 
@@ -23,11 +23,10 @@ public class Artwork {
         this.title = other.getTitle();
         this.description = other.getDescription();
         this.language = other.getLanguage();
-        this.author_id = other.getAuthor_id();
         this.published = other.isPublished();
     }
 
-    public Artwork(int id, int year, int cat_id, String isbn, String title, String description, String language, String img_url, int author_id, boolean published) {
+    public Artwork(int id, int year, int cat_id, String isbn, String title, String description, String language, boolean published) {
         this.id = id;
         this.year = year;
         this.cat_id = cat_id;
@@ -35,7 +34,6 @@ public class Artwork {
         this.title = title;
         this.description = description;
         this.language = language;
-        this.author_id = author_id;
         this.published = published;
     }
 
@@ -47,7 +45,6 @@ public class Artwork {
         this.setLanguage(resultSet.getString("language"));
         this.setYear(resultSet.getInt("year"));
         this.setCat_id(resultSet.getInt("cat_id"));
-        this.setAuthor_id(resultSet.getInt("author_id"));
         this.setPublished(resultSet.getBoolean("published"));
     }
 
@@ -107,14 +104,6 @@ public class Artwork {
         this.language = language;
     }
 
-    public int getAuthor_id() {
-        return author_id;
-    }
-
-    public void setAuthor_id(int author_id) {
-        this.author_id = author_id;
-    }
-
     public boolean isPublished() {
         return published;
     }
@@ -123,7 +112,7 @@ public class Artwork {
         this.published = published;
     }
 
-    public List<Artwork> getAllOperas(boolean admin) throws SQLException {
+    public List<Artwork> getAllArtworks(boolean admin) throws SQLException {
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();
         Statement statement = connection.createStatement();
@@ -153,9 +142,23 @@ public class Artwork {
         return art;
     }
 
-    public List<Image> getPagesOfOpera(int artId) throws SQLException {
+    public List<Image> getArtworkPages(int artId) throws SQLException {
         Image img = new Image();
         List<Image> pages = img.getPagesByArtworkId(artId);
         return pages;
+    }
+
+    public static List<Author> getAuthorListById(int artId) throws SQLException {
+        ConnectionClass connectionClass = new ConnectionClass();
+        Connection connection = connectionClass.getConnection();
+        Statement statement = connection.createStatement();
+        String sql = "SELECT * FROM artwork AS art INNER JOIN paternity pat on art.art_id = pat.artwork_id INNER JOIN author AS auth ON pat.author_id = auth.auth_id WHERE art_id = " + artId +";";
+        ResultSet resultSet = statement.executeQuery(sql);
+        List<Author> authorList = new LinkedList<>();
+        while (resultSet.next()){
+            Author auth = new Author(resultSet);
+            authorList.add(auth);
+        }
+        return authorList;
     }
 }
