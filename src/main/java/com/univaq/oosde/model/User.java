@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 public class User {
-    private int id;
+    private int id, tr_level;
     private String email, name, surname, birth_date, residency, fiscal_code, qualification, profession;
     private boolean transcriber;
     private boolean uploader;
@@ -25,7 +25,7 @@ public class User {
     }
 
     //costruttore che prevede tutti i parametri
-    public User(int id, String email, String nome, String cognome, String dataNascita, String residenza, String titoloStudio, String professione, String cf, boolean transcriber, boolean uploader, boolean manager, boolean administrator, boolean viewer, boolean request, boolean downloader) {
+    public User(int id, String email, String nome, String cognome, String dataNascita, String residenza, String titoloStudio, String professione, String cf, boolean transcriber, boolean uploader, boolean manager, boolean administrator, boolean viewer, boolean request, boolean downloader, int tr_level) {
         this.id = id;
         this.email = email;
         this.name = nome;
@@ -42,6 +42,7 @@ public class User {
         this.viewer = viewer;
         this.request = request;
         this.downloader = downloader;
+        this.tr_level = tr_level;
     }
 
     //costruttore da oggetto ResultSet (query DB)
@@ -62,6 +63,7 @@ public class User {
         this.setViewer(resultSet.getBoolean("viewer"));
         this.setRequest(resultSet.getBoolean("request"));
         this.setDownloader(resultSet.getBoolean("downloader"));
+        this.setTranscriberLevel(resultSet.getInt("tr_level"));
     }
 
     //Getters and Setters
@@ -193,11 +195,15 @@ public class User {
         this.downloader = downloader;
     }
 
-    public List<User> getTranscribers() throws SQLException {
+    public int getTranscriberLevel(){ return tr_level; }
+
+    public void setTranscriberLevel(int tr_level) { this.tr_level = tr_level; }
+
+    public static List<User> getTranscribers() throws SQLException {
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();
         Statement statement = connection.createStatement();
-        String sql = "SELECT * FROM users WHERE transcriber = 1";
+        String sql = "SELECT * FROM user WHERE transcriber = 1";
         ResultSet resultSet = statement.executeQuery(sql);
         List<User> transcribersList = new LinkedList<>();
         while (resultSet.next()) {

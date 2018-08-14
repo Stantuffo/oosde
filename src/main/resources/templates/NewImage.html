@@ -7,14 +7,23 @@
         <!--CSS-->
         <link th:href="@{/css/style.css}" rel="stylesheet">
         <link th:href="@{/css/style2.css}" rel="stylesheet">
+        <link th:href="@{/css/component.css}" rel="stylesheet">
+        <link th:href="@{/css/demo.css}" rel="stylesheet">
+        <link th:href="@{/css/normalize.css}" rel="stylesheet">
+
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-              integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+              integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+              crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
-              integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+              integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
+              crossorigin="anonymous">
         <link rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 
         <!--JS-->
+
+        <link th:href="@{/js/custom-file-input.js}" rel="stylesheet">
+        <link th:href="@{/js/jquery.custom-file-input.js}" rel="stylesheet">
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
                 integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
                 crossorigin="anonymous"></script>
@@ -53,13 +62,13 @@
                     Anagrafica utente
                 </a>
             </li>
-            <li class="active" th:if="${session.User.transcriber || session.User.administrator}">
+            <li th:if="${session.User.transcriber || session.User.administrator}">
                 <a class="nav-link" href="/DigitalLibrary/MyTranscriptions">
                     <i class="fas fa-fas fa-edit"></i>
                     Trascrizioni Assegnate
                 </a>
             </li>
-            <li th:if="${session.User.manager || session.User.administrator}">
+            <li class="active" th:if="${session.User.manager || session.User.administrator}">
                 <a class="nav-link" href="/DigitalLibrary/NewArtwork">
                     <i class="fas fa-book"></i>
                     Aggiungi Opera
@@ -109,7 +118,8 @@
                         </li>
                         <li>
                             <form class="form-inline my-2 my-lg-0" action="/DigitalLibrary/SearchResults">
-                                <input class="form-control mr-sm-2" type="search" name="search" id="search" placeholder="Search"
+                                <input class="form-control mr-sm-2" type="search" name="search" id="search"
+                                       placeholder="Search"
                                        aria-label="Search">
                                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                             </form>
@@ -121,29 +131,45 @@
         <!--CONTENUTO!!!!!-->
         <main>
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-                <h2>Trascrizioni Assegnate</h2>
+                <h2>Aggiungi Pagina ad un'Opera</h2>
             </div>
             <div class="container">
-                <div class="row">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-sm">
-                            <thead>
-                            <tr>
-                                <th>TITOLO DELL'OPERA E NUMERO DI PAGINE DA TRASCRIVERE ASSEGNATE</th>
-                                <th>VISUALIZZA</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="assignment : ${assigned}">
-                                <td th:utext="${assignment.value}" class="text-justify"></td>
-                                <td class="text-center">
-                                    <a th:href="'/DigitalLibrary/MyTranscriptions/Artwork?artId='+${assignment.key}">
-                                        <i class="far fa-eye"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                <div class="row ml-4 mr-4">
+                    <div class="col-12 col-lg-8 col-md-10 col-sm-12 offset-lg-2 offset-md-1">
+                        <div class="row justify-content-center">
+                            <!--inserire form-->
+                            <div class="col-12">
+                                <form action="/DigitalLibrary/AddImage" method="POST" enctype="multipart/form-data">
+                                    <div class="col-12 mb-5">
+                                        <label for="inputArtwork"><strong>Titolo dell'Opera</strong></label>
+                                        <select id="inputArtwork" name="inputArtwork" class="form-control">
+                                            <option th:each="artwork : ${artworkList}" th:value="${artwork.id}"
+                                                    th:text="${artwork.title}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="box rounded">
+                                            <input type="file" name="file-5" id="file-5"
+                                                   class="inputfile inputfile-4 pt-16"
+                                                   data-multiple-caption="{count} immagini selezionate"
+                                                   accept="image/*"/>
+                                            <label for="file-5" id="label">
+                                                <figure>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="17"
+                                                         viewBox="0 0 20 17">
+                                                        <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/>
+                                                    </svg>
+                                                </figure>
+                                                <span>Scegli Immagini&hellip;</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 text-center mt-4 mb-5">
+                                        <button type="submit" class="btn btn-ouyline-primary">Aggiungi</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

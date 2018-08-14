@@ -1,31 +1,30 @@
 <!DOCTYPE html>
 <html lang="it" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <head>
-        <meta charset="UTF-8">
-        <title>Digital Library</title>
-        <!--CSS-->
-        <link th:href="@{/css/style.css}" rel="stylesheet">
-        <link th:href="@{/css/style2.css}" rel="stylesheet">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-              integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
-              integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
-        <link rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
+    <meta charset="UTF-8">
+    <title>Digital Library</title>
+    <!--CSS-->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <link th:href="@{/css/style2.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
+          integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.css">
 
-        <!--JS-->
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-                integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-                crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-                integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-                crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-                integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-                crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
-    </head>
+    <!--JS-->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+</head>
 <body>
 <!--START-->
 <div class="wrapper">
@@ -53,7 +52,7 @@
                     Anagrafica utente
                 </a>
             </li>
-            <li class="active" th:if="${session.User.transcriber || session.User.administrator}">
+            <li th:if="${session.User.transcriber || session.User.administrator}">
                 <a class="nav-link" href="/DigitalLibrary/MyTranscriptions">
                     <i class="fas fa-fas fa-edit"></i>
                     Trascrizioni Assegnate
@@ -70,12 +69,12 @@
                     <i class="fas fa-user-plus"></i>
                     Aggiungi Autore
                 </a>
+            </li>
             <li th:if="${session.User.manager || session.User.administrator}">
                 <a class="nav-link" href="/DigitalLibrary/NewAuthor">
                     <i class="fas fa-tags"></i>
                     Aggiungi Tag ad un'Opera
                 </a>
-            </li>
             </li>
             <li>
                 <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Menù</a>
@@ -109,7 +108,8 @@
                         </li>
                         <li>
                             <form class="form-inline my-2 my-lg-0" action="/DigitalLibrary/SearchResults">
-                                <input class="form-control mr-sm-2" type="search" name="search" id="search" placeholder="Search"
+                                <input class="form-control mr-sm-2" type="search" name="search" id="search"
+                                       placeholder="Search"
                                        aria-label="Search">
                                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                             </form>
@@ -121,30 +121,12 @@
         <!--CONTENUTO!!!!!-->
         <main>
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-                <h2>Trascrizioni Assegnate</h2>
+                <h2>Risultato Trascrizione</h2><br>
+                <span>Trascrizione modificata correttamente</span>
             </div>
-            <div class="container">
-                <div class="row">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-sm">
-                            <thead>
-                            <tr>
-                                <th>TITOLO DELL'OPERA E NUMERO DI PAGINE DA TRASCRIVERE ASSEGNATE</th>
-                                <th>VISUALIZZA</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="assignment : ${assigned}">
-                                <td th:utext="${assignment.value}" class="text-justify"></td>
-                                <td class="text-center">
-                                    <a th:href="'/DigitalLibrary/MyTranscriptions/Artwork?artId='+${assignment.key}">
-                                        <i class="far fa-eye"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            <div>
+                <div class="card">
+                    <span th:utext="${transcription}"></span>
                 </div>
             </div>
         </main>
@@ -153,7 +135,7 @@
 </div>
 <!--END-->
 </body>
-<script th:inline="javascript" type="text/javascript">
+<script type="text/javascript">
     $(document).ready(function () {
         $verso = 0;
         $("#sidebar").mCustomScrollbar({

@@ -112,7 +112,7 @@ public class Artwork {
         this.published = published;
     }
 
-    public List<Artwork> getAllArtworks(boolean admin) throws SQLException {
+    public static List<Artwork> getAllArtworks(boolean admin) throws SQLException {
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();
         Statement statement = connection.createStatement();
@@ -160,5 +160,34 @@ public class Artwork {
             authorList.add(auth);
         }
         return authorList;
+    }
+
+    public static List<Artwork> searchArtworkBySearchString(String search) throws SQLException {
+        ConnectionClass connectionClass = new ConnectionClass();
+        Connection connection = connectionClass.getConnection();
+        Statement statement = connection.createStatement();
+        String sql = "SELECT * FROM artwork WHERE title LIKE '%"+search+"%' OR year LIKE '%"+search+"%' OR isbn LIKE '%"+search+"%';";
+        ResultSet resultSet = statement.executeQuery(sql);
+        List<Artwork> artworkList = new LinkedList<>();
+        while (resultSet.next()){
+            Artwork art = new Artwork(resultSet);
+            System.out.println(art.getTitle());
+            artworkList.add(art);
+        }
+        return artworkList;
+    }
+
+    public static List<Artwork> getArtworkWithNotValidatedImages() throws SQLException {
+        ConnectionClass connectionClass = new ConnectionClass();
+        Connection connection = connectionClass.getConnection();
+        Statement statement = connection.createStatement();
+        String sql = "SELECT DISTINCT artwork.* FROM artwork INNER JOIN image on artwork.art_id = image.artwork_id WHERE image.img_validated = 0";
+        ResultSet resultSet = statement.executeQuery(sql);
+        List<Artwork> artworkList = new LinkedList<>();
+        while (resultSet.next()){
+            Artwork art = new Artwork(resultSet);
+            artworkList.add(art);
+        }
+        return artworkList;
     }
 }

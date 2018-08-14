@@ -116,8 +116,8 @@
                         </span>
                         </li>
                         <li>
-                            <form class="form-inline my-2 my-lg-0">
-                                <input class="form-control mr-sm-2" type="search" placeholder="Search"
+                            <form class="form-inline my-2 my-lg-0" action="/DigitalLibrary/SearchResults">
+                                <input class="form-control mr-sm-2" type="search" name="search" id="search" placeholder="Search"
                                        aria-label="Search">
                                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                             </form>
@@ -138,12 +138,15 @@
                 </div>
                 <div class="col-6 mb-3 fixed-height" id="transcriptionText">
                     <!-- INSERIRE CONTROLLO SCRITTURA-->
-                    <div class="editor"></div>
+                    <div class="editor">
+                        <span th:remove="tag" th:utext="${img.transcription}"></span>
+                    </div>
                     <!-- INSERIRE CONTROLLO SCRITTURA-->
                 </div>
             </div>
             <div class="row justify-content-center align-items-center mb-4">
                 <form action="/DigitalLibrary/AddTranscription" method="POST">
+                    <input hidden type="number" th:value="${img.id}" id="imgId" name="imgId">
                     <textarea hidden name="transcription" id="transcription" cols="30" rows="10"></textarea>
                     <div class="col-12">
                         <button class="btn btn-outline-primary" type="submit">Invia trascrizione</button>

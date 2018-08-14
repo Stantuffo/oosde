@@ -55,7 +55,7 @@
                     Anagrafica utente
                 </a>
             </li>
-            <li th:if="${session.User.transcriber || session.User.administrator}" class="active">
+            <li th:if="${session.User.transcriber || session.User.administrator}">
                 <a class="nav-link" href="/DigitalLibrary/MyTranscriptions">
                     <i class="fas fa-fas fa-edit"></i>
                     Trascrizioni Assegnate
@@ -110,8 +110,8 @@
                         </span>
                         </li>
                         <li>
-                            <form class="form-inline my-2 my-lg-0">
-                                <input class="form-control mr-sm-2" type="search" placeholder="Search"
+                            <form class="form-inline my-2 my-lg-0" action="/DigitalLibrary/SearchResults">
+                                <input class="form-control mr-sm-2" type="search" name="search" id="search" placeholder="Search"
                                        aria-label="Search">
                                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                             </form>
@@ -163,7 +163,7 @@
                 </div>
             </div>
             <div class="slider-nav">
-                <div class="row" th:each="page : ${pages}">
+                <div class="row" th:each="page : ${pages}" th:if="${page.img_validated}">
                     <div>
                         <img class="image-fluid img-thumb mx-auto d-block"
                              th:src="@{${'/' + artwork.id + '/' + page.img_url}}"
@@ -184,7 +184,8 @@
                         <div class="col-6 p0">
                             <div class="card">
                                 <div class="card-body">
-                                    <p class="descr card-text" th:utext="${page.transcription}"></p>
+                                    <p class="descr card-text" th:if="${page.tr_validated}" th:remove="tag" th:utext="${page.transcription}"></p>
+                                    <p class="descr card-text" th:unless="${page.tr_validated}" th:remove="tag" th:text="${'Trascrizione non disponibile.'}"></p>
                                 </div>
                             </div>
                         </div>

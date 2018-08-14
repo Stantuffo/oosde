@@ -64,10 +64,22 @@
                     Aggiungi Opera
                 </a>
             </li>
+            <li th:if="${session.User.uploader || session.User.administrator}">
+                <a class="nav-link" href="/DigitalLibrary/NewImage">
+                    <i class="fas fa-file-image"></i>
+                    Aggiungi Pagina ad un'Opera
+                </a>
+            </li>
             <li th:if="${session.User.manager || session.User.administrator}">
                 <a class="nav-link" href="/DigitalLibrary/NewAuthor">
                     <i class="fas fa-user-plus"></i>
                     Aggiungi Autore
+                </a>
+            </li>
+            <li th:if="${session.User.manager || session.User.administrator}">
+                <a class="nav-link" href="/DigitalLibrary/AssignTranscription">
+                    <i class="fas fa-i-cursor"></i>
+                    Assegna Pagina ad un Trascrittore
                 </a>
             </li>
             <li th:if="${session.User.manager || session.User.administrator}">
@@ -107,8 +119,9 @@
                         </span>
                         </li>
                         <li>
-                            <form class="form-inline my-2 my-lg-0">
-                                <input class="form-control mr-sm-2" type="search" placeholder="Search"
+                            <form class="form-inline my-2 my-lg-0" action="/DigitalLibrary/SearchResults">
+                                <input class="form-control mr-sm-2" type="search" name="search" id="search"
+                                       placeholder="Search"
                                        aria-label="Search">
                                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                             </form>
@@ -159,8 +172,8 @@
         $a = 180;
         jQuery.fn.extend({
             rotate: function (a) {
-                $('#sidebar-arrow').css({'transform': 'rotate('+a+'deg)'});
-                if ($('#info').text()===' Minimizza') {
+                $('#sidebar-arrow').css({'transform': 'rotate(' + a + 'deg)'});
+                if ($('#info').text() === ' Minimizza') {
                     $('#info').text(' Massimizza');
                 }
                 else {

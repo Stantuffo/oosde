@@ -107,8 +107,9 @@
                         </span>
                         </li>
                         <li>
-                            <form class="form-inline my-2 my-lg-0">
-                                <input class="form-control mr-sm-2" type="search" placeholder="Search"
+                            <form class="form-inline my-2 my-lg-0" action="/DigitalLibrary/SearchResults">
+                                <input class="form-control mr-sm-2" type="search" name="search" id="search"
+                                       placeholder="Search"
                                        aria-label="Search">
                                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                             </form>
@@ -119,8 +120,12 @@
         </nav>
         <!--CONTENUTO!!!!!-->
         <main>
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+            <div class="pt-3 pb-2 mb-3">
                 <h2>Opera aggiunta con successo!</h2>
+                <h5>L'immagine è in attesa della validazione da parte dei supervisori al caricamento delle
+                    immagini.</h5>
+                <h5>Se conforme, sarà presto disponibile all'interno della raccolta digitale.</h5>
+
             </div>
         </main>
         <!--END CONTENUTO!!!!!-->
@@ -137,8 +142,8 @@
         $a = 180;
         jQuery.fn.extend({
             rotate: function (a) {
-                $('#sidebar-arrow').css({'transform': 'rotate('+a+'deg)'});
-                if ($('#info').text()===' Minimizza') {
+                $('#sidebar-arrow').css({'transform': 'rotate(' + a + 'deg)'});
+                if ($('#info').text() === ' Minimizza') {
                     $('#info').text(' Massimizza');
                 }
                 else {

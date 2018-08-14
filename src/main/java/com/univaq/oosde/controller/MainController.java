@@ -4,9 +4,10 @@ import com.univaq.oosde.model.ConnectionClass;
 import com.univaq.oosde.model.Artwork;
 import com.univaq.oosde.model.User;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.naming.directory.SearchResult;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.Connection;
@@ -49,6 +50,27 @@ public class MainController {
         return mav;
         //DA AGGIUNGERE//
         //}
+    }
+
+    @GetMapping(value = "/DigitalLibrary/SearchResults")
+    public ModelAndView query(@RequestParam("search") String search, HttpServletRequest request) throws SQLException {
+        if (search.equals("")){
+            backToHomepage();
+        }
+        HttpSession session = request.getSession();
+        if (session.getAttribute("User") == null || session.getAttribute("User").equals("")) {
+            return new ModelAndView("/DigitalLibrary");
+        } else {
+            List<Artwork> artworkResultList = Artwork.searchArtworkBySearchString(search);
+            ModelAndView mav = new ModelAndView("SearchResults");
+            mav.addObject("artworkResultList", artworkResultList);
+            mav.addObject("searchString", search);
+            return mav;
+        }
+    }
+    @PostMapping(value = "/DigitalLibrary/SearchResults")
+    public String backToHomepage(){
+        return "redirect:/DigitalLibrary";
     }
 }
 

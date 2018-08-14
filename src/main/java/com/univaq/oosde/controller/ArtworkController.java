@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
@@ -110,7 +111,7 @@ public class ArtworkController {
             ConnectionClass connectionClass = new ConnectionClass();
             Connection connection = connectionClass.getConnection();
             if (title.equals("")) {
-                return new ModelAndView("redirect:/DigitalLibrary/NewAuthor");
+                return new ModelAndView("redirect:/DigitalLibrary/Newrtwork");
             } else {
                 String sql = "INSERT INTO artwork(title, description, language, year, cat_id, added_by, isbn, published) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
                 PreparedStatement statement = connection.prepareStatement(sql);
@@ -147,8 +148,19 @@ public class ArtworkController {
                     statement.setInt(2, art_id);
                     statement.executeUpdate();
                 }
+                boolean success = (new File("C:/Users/simon/Documents/oosde/src/main/resources/static/"+art_id)).mkdirs();
                 return new ModelAndView("ArtworkAdded");
             }
         }
+    }
+
+    @RequestMapping(value = "/DigitalLibrary/AssignTranscription")
+    public ModelAndView assignTranscription() throws SQLException {
+        List<Artwork> artworkList = Artwork.getArtworkWithNotValidatedImages();
+        List<User> transcribersList = User.getTranscribers();
+        ModelAndView mav = new ModelAndView("AssignTranscription");
+        mav.addObject("transcriberList", transcribersList);
+        mav.addObject("artworkList", artworkList);
+        return mav;
     }
 }
