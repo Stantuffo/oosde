@@ -9,7 +9,7 @@ import java.util.List;
 public class Image {
 
     private int id, artwork_id;
-    private String img_url, transcription;
+        private String img_url, transcription;
     private boolean img_validated, tr_validated;
 
     //Costruttore vuoto
@@ -37,12 +37,11 @@ public class Image {
     }
 
 
-
     //Getters and Setters
+
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
@@ -121,11 +120,11 @@ public class Image {
         return img.getTranscription();
     }
 
-    public static List<Image> getNotValidatedImages() throws SQLException {
+    public static List<Image> getNotValidatedImages(int artId) throws SQLException {
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();
         Statement statement = connection.createStatement();
-        String sql = "SELECT * FROM image WHERE img_validated = 0";
+        String sql = "SELECT * FROM image WHERE img_validated = 0 AND image.artwork_id = "+ artId;
         ResultSet resultSet = statement.executeQuery(sql);
         List<Image> pages = new LinkedList<>();
         while (resultSet.next()) {
@@ -133,5 +132,19 @@ public class Image {
             pages.add(img);
         }
         return pages;
+    }
+
+    public static List<Image> getTranscriptionsToValidate() throws SQLException {
+        ConnectionClass connectionClass = new ConnectionClass();
+        Connection connection = connectionClass.getConnection();
+        Statement statement = connection.createStatement();
+        String sql = "SELECT * FROM image WHERE tr_validated = 0 ";
+        ResultSet resultSet = statement.executeQuery(sql);
+        List<Image> unvalidatedTranscriptionList = new LinkedList<>();
+        while (resultSet.next()) {
+            Image img = new Image(resultSet);
+            unvalidatedTranscriptionList.add(img);
+        }
+        return unvalidatedTranscriptionList;
     }
 }

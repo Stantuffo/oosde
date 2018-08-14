@@ -135,26 +135,10 @@
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
                 <div class="container">
                     <div class="row">
-                        <h2>Scegli l'Opera</h2>
+                        <h2>Scegli le immagini ed il trascrittore designato</h2>
                     </div>
-                    <div class="row">
-                        <h5>Vengono mostrate solo le opere per le quali ci sono immagini non trascritte o con trascrizioni non validate.</h5>
-                    </div>
-                    <div class="row mb-5">
-                        <h6 class="red">MODIFICARE! NON E' LA PAGINA DI ASSEGNAZIONE DELLE IMMAGINI AI TRASCRITTORI!!!</h6>
-                    </div>
-                    <form action="">
-                        <div class="form-row">
-                            <div class="form-group col-4">
-                                <label for="inputArtwork"><strong>Opera</strong></label>
-                                <select id="inputArtwork" name="inputArtwork" class="form-control">
-                                    <option th:each="artwork : ${artworkList}" th:value="${artwork.id}"
-                                            th:text="${artwork.title}"></option>
-                                </select>
-                            </div>
-                            <div class="form-group col-4 pt-4 mt-3">
-                                -- ASSEGNA A -->
-                            </div>
+                    <form action="/DigitalLibrary/AssignTranscription/AssignResult" method="POST">
+                        <div class="row justify-content-center">
                             <div class="form-group col-4">
                                 <label for="inputUser"><strong>Trascrittore</strong></label>
                                 <select id="inputUser" name="inputUser" class="form-control">
@@ -162,6 +146,26 @@
                                             th:text="${transcriber.name + ' ' + transcriber.surname}"></option>
                                 </select>
                             </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6 col-sm-12 mt-3 pl-2 pr-2" th:each="image : ${imageList}">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" name="inputImageId"
+                                           th:value="${image.id}" id="imagesCheckboxes">
+                                    <label class="form-check-label" for="imagesCheckboxes">
+                                        <div class="card bordered-grey fixed-height-sm resizable justify-content-center">
+                                            <a th:href="@{'/DigitalLibrary/Artwork/ImageDetail?imgId='+${image.id}}"
+                                               target="_blank" class="justify-content-center">
+                                                <img class="resizable"
+                                                     th:src="@{${'/' + artworkId + '/' + image.img_url}}" alt="">
+                                            </a>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <button class="btn btn-outline-primary" type="submit">Assegna</button>
                         </div>
                     </form>
                 </div>

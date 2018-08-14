@@ -282,6 +282,11 @@ body {
     overflow: hidden;
 }
 
+.fixed-height-sm {
+    height: 20vw !important;
+    overflow: hidden;
+}
+
 .content {
     display: flex;
     align-items: center;
@@ -327,4 +332,12 @@ body {
     top: -60px;
     position: relative;
     left: 30px;
+}
+
+.bordered-grey{
+    border: 1px solid grey!important;
+}
+
+.mw-100p{
+    min-width: 100%;
 }

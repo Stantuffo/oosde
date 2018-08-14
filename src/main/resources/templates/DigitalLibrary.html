@@ -88,6 +88,12 @@
                     Aggiungi Tag ad un'Opera
                 </a>
             </li>
+            <li th:if="${session.User.manager || session.User.administrator}">
+                <a class="nav-link" href="/DigitalLibrary/Artwork/ValidateTranscription">
+                    <i class="far fa-check-circle"></i>
+                    Valida Trascrizione
+                </a>
+            </li>
             <li>
                 <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Menù</a>
                 <ul class="collapse list-unstyled" id="pageSubmenu">

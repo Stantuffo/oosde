@@ -66,11 +66,12 @@ public class User {
         this.setTranscriberLevel(resultSet.getInt("tr_level"));
     }
 
+
     //Getters and Setters
+
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
@@ -78,7 +79,6 @@ public class User {
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
@@ -199,6 +199,17 @@ public class User {
 
     public void setTranscriberLevel(int tr_level) { this.tr_level = tr_level; }
 
+    public static User getUserById(int usrId) throws SQLException {
+        ConnectionClass connectionClass = new ConnectionClass();
+        Connection connection = connectionClass.getConnection();
+        Statement statement = connection.createStatement();
+        String sql = "SELECT * FROM user WHERE usr_id = "+usrId;
+        ResultSet resultSet = statement.executeQuery(sql);
+        resultSet.next();
+        User urs = new User(resultSet);
+        return urs;
+    }
+
     public static List<User> getTranscribers() throws SQLException {
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();
@@ -303,5 +314,23 @@ public class User {
             imgMap.put(resultSet.getInt("img_id"), resultSet.getString("image_url"));
         }
         return imgMap;
+    }
+
+    public static boolean checkIfUserHasPageYet(int inputUser, int imgid) throws SQLException {
+        ConnectionClass connectionClass = new ConnectionClass();
+        Connection connection = connectionClass.getConnection();
+        Statement statement = connection.createStatement();
+        String sql = "SELECT COUNT(w_a_id) AS esiste FROM write_assignment WHERE user_id ="+inputUser +" AND image_id ="+imgid;
+        ResultSet resultSet = statement.executeQuery(sql);
+        resultSet.next();
+        return resultSet.getBoolean("esiste");
+    }
+
+    public static void assignTranscriptionToUser(int inputUser, int imgid) throws SQLException {
+        ConnectionClass connectionClass = new ConnectionClass();
+        Connection connection = connectionClass.getConnection();
+        Statement statement = connection.createStatement();
+        String sql = "INSERT INTO write_assignment (image_id, user_id) VALUES ("+imgid+","+inputUser+")";
+        statement.executeUpdate(sql);
     }
 }

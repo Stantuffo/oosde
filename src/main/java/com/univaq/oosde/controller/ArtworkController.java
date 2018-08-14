@@ -2,20 +2,12 @@ package com.univaq.oosde.controller;
 
 import com.univaq.oosde.model.*;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.*;
 import java.util.List;
 import java.util.TreeMap;
@@ -24,7 +16,11 @@ import java.util.TreeMap;
 public class ArtworkController {
 
     @GetMapping("DigitalLibrary/Artwork")
-    public ModelAndView viewArtworkPage(@RequestParam int artId) throws SQLException {
+    public ModelAndView viewArtworkPage(@RequestParam int artId, HttpServletRequest request) throws SQLException {
+        HttpSession session = request.getSession(true);
+        if (session.getAttribute("User") == null) {
+            return new ModelAndView("redirect:/DigitalLibrary");
+        }
         Artwork art = Artwork.getArtworkById(artId);
         List<Image> imgs = art.getArtworkPages(artId);
         List<Author> authorList = Artwork.getAuthorListById(artId);
@@ -148,19 +144,91 @@ public class ArtworkController {
                     statement.setInt(2, art_id);
                     statement.executeUpdate();
                 }
-                boolean success = (new File("C:/Users/simon/Documents/oosde/src/main/resources/static/"+art_id)).mkdirs();
+                boolean success = (new File("C:/Users/simon/Documents/oosde/src/main/resources/static/" + art_id)).mkdirs();
                 return new ModelAndView("ArtworkAdded");
             }
         }
     }
 
     @RequestMapping(value = "/DigitalLibrary/AssignTranscription")
-    public ModelAndView assignTranscription() throws SQLException {
-        List<Artwork> artworkList = Artwork.getArtworkWithNotValidatedImages();
-        List<User> transcribersList = User.getTranscribers();
-        ModelAndView mav = new ModelAndView("AssignTranscription");
-        mav.addObject("transcriberList", transcribersList);
-        mav.addObject("artworkList", artworkList);
-        return mav;
+    public ModelAndView assignTranscription(HttpServletRequest request) throws SQLException {
+        HttpSession session = request.getSession(true);
+        User user = null;
+        if (session != null) {
+            user = (User) session.getAttribute("User");
+        }
+        if (user.isManager() || user.isAdministrator()) {
+            List<Artwork> artworkList = Artwork.getArtworkWithNotValidatedImages();
+            ModelAndView mav = new ModelAndView("ChooseArtworkForTranscription");
+            mav.addObject("artworkList", artworkList);
+            return mav;
+        } else {
+            return new ModelAndView("redirect:/DigitalLibrary");
+        }
+    }
+
+    @GetMapping(value = "/DigitalLibrary/AssignTranscription/ChooseTranscriber")
+    public ModelAndView chooseTranscriber(@RequestParam int artId, HttpServletRequest request) throws SQLException {
+        HttpSession session = request.getSession(true);
+        User user = null;
+        if (session != null) {
+            user = (User) session.getAttribute("User");
+        }
+        if (user.isManager() || user.isAdministrator()) {
+            List<Image> imageList = Image.getNotValidatedImages(artId);
+            List<User> transcriberList = User.getTranscribers();
+            ModelAndView mav = new ModelAndView("ChooseTranscriber");
+            mav.addObject("artworkId", artId);
+            mav.addObject("imageList", imageList);
+            mav.addObject("transcriberList", transcriberList);
+            return mav;
+        } else {
+            return new ModelAndView("redirect:/DigitalLibrary");
+        }
+    }
+
+
+    @PostMapping(value = "/DigitalLibrary/AssignTranscription/AssignResult")
+    public ModelAndView insertAssignment(@RequestParam("inputUser") int inputUser,
+                                         @RequestParam("inputImageId") int[] inputImageId, HttpServletRequest request) throws SQLException {
+        HttpSession session = request.getSession(true);
+        User user = null;
+        if (session != null) {
+            user = (User) session.getAttribute("User");
+        }
+        if (user.isManager() || user.isAdministrator()) {
+            int count = 0;
+            for (int imgid : inputImageId) {
+                boolean esiste = User.checkIfUserHasPageYet(inputUser, imgid);
+                if (!esiste) {
+                    User.assignTranscriptionToUser(inputUser, imgid);
+                }
+                count++;
+            }
+            User usr = User.getUserById(inputUser);
+            ModelAndView mav = new ModelAndView("TranscriptionsAssigned");
+            mav.addObject("count", count);
+            mav.addObject("user", usr);
+            return mav;
+        } else {
+            return new ModelAndView("redirect:/DigitalLibrary");
+        }
+    }
+
+    @RequestMapping(value = "/DigitalLibrary/Artwork/ValidateTranscription")
+    public ModelAndView getTranscriptionsToBeValidated(HttpServletRequest request) throws SQLException {
+        HttpSession session = request.getSession(true);
+        User user = null;
+        if (session != null) {
+            user = (User) session.getAttribute("User");
+        }
+        if (user.isManager() || user.isAdministrator()) {
+            List<Image> pages = Image.getTranscriptionsToValidate();
+            ModelAndView mav = new ModelAndView("UnvalidatedTranscriptionList");
+            mav.addObject(pages);
+            return mav;
+        } else {
+            return new ModelAndView("redirect:/DigitalLibrary");
+        }
     }
 }

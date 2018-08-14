@@ -40,7 +40,7 @@
         </div>
         <ul class="list-unstyled components">
             <p>Intestazione Menù</p>
-            <li>
+            <li class="active">
                 <a href="/DigitalLibrary">
                     <i class="fas fa-home"></i>
                     Home
@@ -52,7 +52,7 @@
                     Anagrafica utente
                 </a>
             </li>
-            <li th:if="${session.User.transcriber || session.User.administrator}" class="active">
+            <li th:if="${session.User.transcriber || session.User.administrator}">
                 <a class="nav-link" href="/DigitalLibrary/MyTranscriptions">
                     <i class="fas fa-fas fa-edit"></i>
                     Trascrizioni Assegnate
@@ -64,10 +64,22 @@
                     Aggiungi Opera
                 </a>
             </li>
+            <li th:if="${session.User.uploader || session.User.administrator}">
+                <a class="nav-link" href="/DigitalLibrary/NewImage">
+                    <i class="fas fa-file-image"></i>
+                    Aggiungi Pagina ad un'Opera
+                </a>
+            </li>
             <li th:if="${session.User.manager || session.User.administrator}">
                 <a class="nav-link" href="/DigitalLibrary/NewAuthor">
                     <i class="fas fa-user-plus"></i>
                     Aggiungi Autore
+                </a>
+            </li>
+            <li th:if="${session.User.manager || session.User.administrator}">
+                <a class="nav-link" href="/DigitalLibrary/AssignTranscription">
+                    <i class="fas fa-i-cursor"></i>
+                    Assegna Pagina ad un Trascrittore
                 </a>
             </li>
             <li th:if="${session.User.manager || session.User.administrator}">
@@ -108,7 +120,8 @@
                         </li>
                         <li>
                             <form class="form-inline my-2 my-lg-0" action="/DigitalLibrary/SearchResults">
-                                <input class="form-control mr-sm-2" type="search" name="search" id="search" placeholder="Search"
+                                <input class="form-control mr-sm-2" type="search" name="search" id="search"
+                                       placeholder="Search"
                                        aria-label="Search">
                                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                             </form>
@@ -120,15 +133,20 @@
         <!--CONTENUTO!!!!!-->
         <main>
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-                <h2>Trascrizioni Assegnate Per l'Opera Selezionata</h2>
-            </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col-6 mb-3 card bordered-grey fixed-height content justify-content-center" th:each="transcription : ${transcriptionList}">
-                        <a class="mw-100p" th:href="'/DigitalLibrary/MyTranscriptions/Artwork/Image?imgId='+${transcription.key}">
-                            <img class="image-fluid resizable rounded" th:src="@{${'/' + ArtworkId + '/' + transcription.value}}" alt="">
-                            <p class="white-text centering rounded p-3"><i class="fas fa-pen-nib fa-2x"> Trascrivi</i></p>
-                        </a>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2>Pagine correttamente assegnate:
+                                <span class="strong" th:text="${count}"></span>
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <h2>Trascrittore designato:
+                                <span class="strong" th:text="${user.name+' '+user.surname}"></span>
+                            </h2>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -147,8 +165,8 @@
         $a = 180;
         jQuery.fn.extend({
             rotate: function (a) {
-                $('#sidebar-arrow').css({'transform': 'rotate('+a+'deg)'});
-                if ($('#info').text()===' Minimizza') {
+                $('#sidebar-arrow').css({'transform': 'rotate(' + a + 'deg)'});
+                if ($('#info').text() === ' Minimizza') {
                     $('#info').text(' Massimizza');
                 }
                 else {

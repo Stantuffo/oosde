@@ -133,38 +133,23 @@
         <!--CONTENUTO!!!!!-->
         <main>
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-                <div class="container">
-                    <div class="row">
-                        <h2>Scegli l'Opera</h2>
-                    </div>
-                    <div class="row">
-                        <h5>Vengono mostrate solo le opere per le quali ci sono immagini non trascritte o con trascrizioni non validate.</h5>
-                    </div>
-                    <div class="row mb-5">
-                        <h6 class="red">MODIFICARE! NON E' LA PAGINA DI ASSEGNAZIONE DELLE IMMAGINI AI TRASCRITTORI!!!</h6>
-                    </div>
-                    <form action="">
-                        <div class="form-row">
-                            <div class="form-group col-4">
-                                <label for="inputArtwork"><strong>Opera</strong></label>
-                                <select id="inputArtwork" name="inputArtwork" class="form-control">
-                                    <option th:each="artwork : ${artworkList}" th:value="${artwork.id}"
-                                            th:text="${artwork.title}"></option>
-                                </select>
-                            </div>
-                            <div class="form-group col-4 pt-4 mt-3">
-                                -- ASSEGNA A -->
-                            </div>
-                            <div class="form-group col-4">
-                                <label for="inputUser"><strong>Trascrittore</strong></label>
-                                <select id="inputUser" name="inputUser" class="form-control">
-                                    <option th:each="transcriber : ${transcriberList}" th:value="${transcriber.id}"
-                                            th:text="${transcriber.name + ' ' + transcriber.surname}"></option>
-                                </select>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                <h2>Scegli l'Opera</h2>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                    <thead>
+                    <tr>
+                        <th>SCEGLI L'OPERA ALLA QUALE APPARTENGONO LE PAGINE CHE DESIDERI ASSEGNARE AL TRASCRITTORE</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="artwork : ${artworkList}">
+                        <td>
+                            <a th:href="@{'/DigitalLibrary/AssignTranscription/ChooseTranscriber?artId='+${artwork.id}}"  th:text="${artwork.title}"></a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </main>
         <!--END CONTENUTO!!!!!-->
