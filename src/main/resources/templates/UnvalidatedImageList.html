@@ -40,7 +40,7 @@
         </div>
         <ul class="list-unstyled components">
             <p>Intestazione Menù</p>
-            <li class="active">
+            <li>
                 <a href="/DigitalLibrary">
                     <i class="fas fa-home"></i>
                     Home
@@ -88,16 +88,10 @@
                     Aggiungi Tag ad un'Opera
                 </a>
             </li>
-            <li th:if="${session.User.manager || session.User.administrator}">
-                <a class="nav-link" href="/DigitalLibrary/Artwork/ValidateImage">
-                    <i class="far fa-check-circle"></i>
-                    Valida Immagini
-                </a>
-            </li>
-            <li th:if="${session.User.manager || session.User.administrator}">
+            <li class="active" th:if="${session.User.manager || session.User.administrator}">
                 <a class="nav-link" href="/DigitalLibrary/Artwork/ValidateTranscription">
                     <i class="far fa-check-circle"></i>
-                    Valida Trascrizioni
+                    Valida Trascrizione
                 </a>
             </li>
             <li>
@@ -145,29 +139,18 @@
         <!--CONTENUTO!!!!!-->
         <main>
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-                <h2>Opere</h2>
+                <h2>Scegli l'immagine da validare</h2>
             </div>
-            <div class="table-responsive">
-                <table class="table table-striped table-sm">
-                    <thead>
-                    <tr>
-                        <th>ISBN</th>
-                        <th class="th-col-3">TITOLO</th>
-                        <th>DESCRIZIONE</th>
-                        <th th:if="${session.User.administrator || session.User.manager}">PUBBLICATO</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="art : ${artworks}">
-                        <td th:text="${art.isbn}"></td>
-                        <td><a th:href="@{'/DigitalLibrary/Artwork?artId='+${art.id}}" th:text="${art.title}"></a></td>
-                        <td th:text="${art.description}" class="text-justify"></td>
-                        <td th:if="${session.User.administrator || session.User.manager}" class="text-center">
-                            <i th:class="${art.published}? 'fas fa-check green' : 'fas fa-times red'"></i>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+            <div class="container">
+                <div class="row">
+                    <div th:each="image : ${unvalImages}"
+                         class="col-lg-4 col-md-6 col-sm-12 mb-3 card fixed-height content justify-content-center bordered-grey">
+                        <a th:href="'/DigitalLibrary/Artwork/ValidateImage/Validate?imgId='+${image.id}">
+                            <img class="image-fluid resizable rounded"
+                                 th:src="@{${'/' + image.artwork_id + '/' + image.img_url}}" alt="">
+                        </a>
+                    </div>
+                </div>
             </div>
         </main>
         <!--END CONTENUTO!!!!!-->

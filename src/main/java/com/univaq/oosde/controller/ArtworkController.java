@@ -4,6 +4,7 @@ import com.univaq.oosde.model.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.thymeleaf.util.Validate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -225,7 +226,38 @@ public class ArtworkController {
         if (user.isManager() || user.isAdministrator()) {
             List<Image> pages = Image.getTranscriptionsToValidate();
             ModelAndView mav = new ModelAndView("UnvalidatedTranscriptionList");
-            mav.addObject(pages);
+            mav.addObject("unvalTranscriptions", pages);
+            return mav;
+        } else {
+            return new ModelAndView("redirect:/DigitalLibrary");
+        }
+    }
+
+    @GetMapping(value= "/DigitalLibrary/Artwork/ValidateTranscription/Validate")
+    public ModelAndView validateTr(@RequestParam ("pageId") int pageId, HttpServletRequest request) throws SQLException {
+        Image img = Image.getImageById(pageId);
+        ModelAndView mav = new ModelAndView("TranscriptionValidation");
+        mav.addObject("img", img);
+        return mav;
+    }
+
+    @PostMapping("/DigitalLibrary/ValidateTranscription")
+    public String validateTranscription(@RequestParam ("imgId") int imgId, @RequestParam("transcription") String transcription, HttpServletRequest request) throws SQLException {
+        Image.validateTranscription(imgId, transcription);
+        return "redirect:/DigitalLibrary";
+    }
+
+    @RequestMapping(value = "/DigitalLibrary/Artwork/ValidateImage")
+    public ModelAndView getImagesToBeValidated(HttpServletRequest request) throws SQLException {
+        HttpSession session = request.getSession(true);
+        User user = null;
+        if (session != null) {
+            user = (User) session.getAttribute("User");
+        }
+        if (user.isManager() || user.isAdministrator()) {
+            List<Image> pages = Image.getImagesToValidate();
+            ModelAndView mav = new ModelAndView("UnvalidatedImageList");
+            mav.addObject("unvalImages", pages);
             return mav;
         } else {
             return new ModelAndView("redirect:/DigitalLibrary");

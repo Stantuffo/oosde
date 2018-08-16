@@ -9,7 +9,7 @@ import java.util.List;
 public class Image {
 
     private int id, artwork_id;
-        private String img_url, transcription;
+    private String img_url, transcription;
     private boolean img_validated, tr_validated;
 
     //Costruttore vuoto
@@ -42,6 +42,7 @@ public class Image {
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -70,19 +71,27 @@ public class Image {
         this.transcription = transcription;
     }
 
-    public boolean isImg_validated() { return img_validated; }
+    public boolean isImg_validated() {
+        return img_validated;
+    }
 
-    public void setImg_validated(boolean img_validated){ this.img_validated = img_validated; }
+    public void setImg_validated(boolean img_validated) {
+        this.img_validated = img_validated;
+    }
 
-    public boolean isTr_validated() { return tr_validated; }
+    public boolean isTr_validated() {
+        return tr_validated;
+    }
 
-    public void setTr_validated(boolean tr_validated){ this.tr_validated = tr_validated; }
+    public void setTr_validated(boolean tr_validated) {
+        this.tr_validated = tr_validated;
+    }
 
     public List<Image> getPagesByArtworkId(int artId) throws SQLException {
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();
         Statement statement = connection.createStatement();
-        String sql = "SELECT * FROM image WHERE artwork_id ="+artId+" AND img_validated = 1";
+        String sql = "SELECT * FROM image WHERE artwork_id =" + artId + " AND img_validated = 1";
         ResultSet resultSet = statement.executeQuery(sql);
         List<Image> pages = new LinkedList<>();
         while (resultSet.next()) {
@@ -111,7 +120,6 @@ public class Image {
         PreparedStatement pstmt = connection.prepareStatement("UPDATE image SET transcription = (?) WHERE img_id = " + imgId);
         pstmt.setString(1, transcription); // this is your html string from step #1
         int res = pstmt.executeUpdate();
-        System.out.println(res);
         return true;
     }
 
@@ -124,7 +132,7 @@ public class Image {
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();
         Statement statement = connection.createStatement();
-        String sql = "SELECT * FROM image WHERE img_validated = 0 AND image.artwork_id = "+ artId;
+        String sql = "SELECT * FROM image WHERE img_validated = 0 AND image.artwork_id = " + artId;
         ResultSet resultSet = statement.executeQuery(sql);
         List<Image> pages = new LinkedList<>();
         while (resultSet.next()) {
@@ -138,7 +146,7 @@ public class Image {
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();
         Statement statement = connection.createStatement();
-        String sql = "SELECT * FROM image WHERE tr_validated = 0 ";
+        String sql = "SELECT * FROM image WHERE tr_validated = 0";
         ResultSet resultSet = statement.executeQuery(sql);
         List<Image> unvalidatedTranscriptionList = new LinkedList<>();
         while (resultSet.next()) {
@@ -146,5 +154,33 @@ public class Image {
             unvalidatedTranscriptionList.add(img);
         }
         return unvalidatedTranscriptionList;
+    }
+
+    public static void validateTranscription(int imgId, String transcription) throws SQLException {
+        ConnectionClass connectionClass = new ConnectionClass();
+        Connection connection = connectionClass.getConnection();
+        PreparedStatement pstmt = connection.prepareStatement("UPDATE image SET transcription = ?, tr_validated = ? WHERE img_id =  ? ");
+        pstmt.setString(1, transcription);
+        pstmt.setInt(2, 1);
+        pstmt.setInt(3, imgId);
+        pstmt.executeUpdate();
+        String sql = "DELETE FROM write_assignment WHERE image_id = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setInt(1, imgId);
+        preparedStatement.executeUpdate();
+    }
+
+    public static List<Image> getImagesToValidate() throws SQLException {
+        ConnectionClass connectionClass = new ConnectionClass();
+        Connection connection = connectionClass.getConnection();
+        Statement statement = connection.createStatement();
+        String sql = "SELECT * FROM image WHERE img_validated = 0";
+        ResultSet resultSet = statement.executeQuery(sql);
+        List<Image> pages = new LinkedList<>();
+        while (resultSet.next()) {
+            Image img = new Image(resultSet);
+            pages.add(img);
+        }
+        return pages;
     }
 }
