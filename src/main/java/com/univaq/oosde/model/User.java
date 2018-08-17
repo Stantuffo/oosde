@@ -16,7 +16,6 @@ public class User {
     private boolean uploader;
     private boolean manager;
     private boolean administrator;
-    private boolean viewer;
     private boolean request;
     private boolean downloader;
 
@@ -25,7 +24,7 @@ public class User {
     }
 
     //costruttore che prevede tutti i parametri
-    public User(int id, String email, String nome, String cognome, String dataNascita, String residenza, String titoloStudio, String professione, String cf, boolean transcriber, boolean uploader, boolean manager, boolean administrator, boolean viewer, boolean request, boolean downloader, int tr_level) {
+    public User(int id, String email, String nome, String cognome, String dataNascita, String residenza, String titoloStudio, String professione, String cf, boolean transcriber, boolean uploader, boolean manager, boolean administrator, boolean request, boolean downloader, int tr_level) {
         this.id = id;
         this.email = email;
         this.name = nome;
@@ -39,7 +38,6 @@ public class User {
         this.uploader = uploader;
         this.manager = manager;
         this.administrator = administrator;
-        this.viewer = viewer;
         this.request = request;
         this.downloader = downloader;
         this.tr_level = tr_level;
@@ -60,7 +58,6 @@ public class User {
         this.setUploader(resultSet.getBoolean("uploader"));
         this.setManager(resultSet.getBoolean("manager"));
         this.setAdministrator(resultSet.getBoolean("administrator"));
-        this.setViewer(resultSet.getBoolean("viewer"));
         this.setRequest(resultSet.getBoolean("request"));
         this.setDownloader(resultSet.getBoolean("downloader"));
         this.setTranscriberLevel(resultSet.getInt("tr_level"));
@@ -169,14 +166,6 @@ public class User {
 
     public void setAdministrator(boolean administrator) {
         this.administrator = administrator;
-    }
-
-    public boolean isViewer() {
-        return viewer;
-    }
-
-    public void setViewer(boolean viewer) {
-        this.viewer = viewer;
     }
 
     public boolean isRequest() {

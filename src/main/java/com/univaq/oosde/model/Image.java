@@ -1,10 +1,19 @@
 package com.univaq.oosde.model;
 
-import org.springframework.web.servlet.ModelAndView;
-
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class Image {
 
@@ -42,7 +51,6 @@ public class Image {
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
@@ -182,5 +190,129 @@ public class Image {
             pages.add(img);
         }
         return pages;
+    }
+
+    public static long getImageSize(int artId, String imgUrl) {
+        FileInfo file = new FileInfo(new File("C:/Users/simon/Documents/oosde/src/main/resources/static/" + artId + File.separator + imgUrl));
+        return file.getSize();
+    }
+
+    public static int getImageWidth(int artId, String imgUrl) throws IOException {
+        BufferedImage bimg = ImageIO.read(new File("C:/Users/simon/Documents/oosde/src/main/resources/static/" + artId + File.separator + imgUrl));
+        return bimg.getWidth();
+    }
+
+    public static int getImageHeight(int artId, String imgUrl) throws IOException {
+        BufferedImage bimg = ImageIO.read(new File("C:/Users/simon/Documents/oosde/src/main/resources/static/" + artId + File.separator + imgUrl));
+        return bimg.getHeight();
+    }
+
+    static class FileInfo {
+
+
+        public enum Timefield {
+            CREATED, ACCESSED, WRITTEN;
+
+        }
+        private final DateFormat FORMATTER = new SimpleDateFormat(
+                "dd/MM/yyyy  hh:mm");
+
+        private File file;
+
+        private boolean hasLoaded = false;
+        private String owner;
+        private Map<Timefield, java.util.Date> timefields = new HashMap<Timefield, java.util.Date>();
+        public FileInfo(File file) {
+            this.file = file;
+        }
+
+        private String getTimefieldSwitch(Timefield field) {
+            switch (field) {
+                case CREATED:
+                    return "C";
+                case ACCESSED:
+                    return "A";
+                default:
+                    return "W";
+            }
+        }
+
+        private void shellToDir(Timefield timefield) throws IOException,
+                ParseException {
+            Runtime systemShell = Runtime.getRuntime();
+            Process output = systemShell.exec(String.format("cmd /c dir /Q /R /T%s %s ", getTimefieldSwitch(timefield), file.getAbsolutePath()));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(output.getInputStream()));
+            String outputLine = null;
+            while ((outputLine = reader.readLine()) != null) {
+                if (outputLine.contains(file.getName())) {
+                    timefields.put(timefield, FORMATTER.parse(outputLine.substring(0, 17)));
+                    owner = outputLine.substring(36, 59);
+                }
+            }
+        }
+
+        private void load() throws IOException, ParseException {
+            if (hasLoaded)
+                return;
+            shellToDir(Timefield.CREATED);
+            shellToDir(Timefield.ACCESSED);
+            shellToDir(Timefield.WRITTEN);
+        }
+
+        public String getName() {
+            return file.getName();
+        }
+
+        public String getAbsolutePath() {
+            return file.getAbsolutePath();
+        }
+
+        public long getSize() {
+            return file.length();
+        }
+
+        public Date getLastModified() {
+            return new Date(file.lastModified());
+        }
+
+        public String getOwner() throws IOException, ParseException {
+            load();
+            return owner;
+        }
+
+        public java.util.Date getCreated() throws IOException, ParseException {
+            load();
+            return timefields.get(Timefield.CREATED);
+        }
+
+        public java.util.Date getAccessed() throws IOException, ParseException {
+            load();
+            return timefields.get(Timefield.ACCESSED);
+        }
+
+        public java.util.Date getWritten() throws IOException, ParseException {
+            load();
+            return timefields.get(Timefield.WRITTEN);
+        }
+
+
+    }
+    public static void validateImage(int imgId) throws SQLException {
+        ConnectionClass connectionClass = new ConnectionClass();
+        Connection connection = connectionClass.getConnection();
+        PreparedStatement pstmt = connection.prepareStatement("UPDATE image SET img_validated = ? WHERE img_id =  ? ");
+        pstmt.setInt(1, 1);
+        pstmt.setInt(2, imgId);
+        pstmt.executeUpdate();
+    }
+
+    public static void insertImage(String path, String fileName) throws SQLException {
+        ConnectionClass connectionClass = new ConnectionClass();
+        Connection connection = connectionClass.getConnection();
+        String sql = "INSERT INTO image(image_url, artwork_id) VALUES (?, ?)";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, fileName);
+        statement.setString(2, path);
+        statement.executeUpdate();
     }
 }

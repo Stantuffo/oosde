@@ -77,7 +77,7 @@ public class ImageController {
     }
 
     @RequestMapping("DigitalLibrary/AddImage")
-    public void uploadImages(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public String uploadImages(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
 
         // Create path components to save the file
@@ -87,10 +87,9 @@ public class ImageController {
 
         OutputStream out = null;
         InputStream filecontent = null;
-        final PrintWriter writer = response.getWriter();
+        //final PrintWriter writer = response.getWriter();
 
         try {
-
             out = new FileOutputStream(new File("C:/Users/simon/Documents/oosde/src/main/resources/static/" + path + File.separator + fileName));
             filecontent = filePart.getInputStream();
 
@@ -100,12 +99,11 @@ public class ImageController {
             while ((read = filecontent.read(bytes)) != -1) {
                 out.write(bytes, 0, read);
             }
-            writer.println("New file " + fileName + " created at " + path);
+            Image.insertImage(path, fileName);
+            //writer.println("New file " + fileName + " created at " + path);
         } catch (FileNotFoundException fne) {
-            writer.println("You either did not specify a file to upload or are "
-                    + "trying to upload a file to a protected or nonexistent "
-                    + "location.");
-            writer.println("<br/> ERROR: " + fne.getMessage());
+            //writer.println("You either did not specify a file to upload or are " + "trying to upload a file to a protected or nonexistent " + "location.");
+            //writer.println("<br/> ERROR: " + fne.getMessage());
 
         } finally {
             if (out != null) {
@@ -114,11 +112,19 @@ public class ImageController {
             if (filecontent != null) {
                 filecontent.close();
             }
-            if (writer != null) {
+            /*if (writer != null) {
                 writer.close();
-            }
+                System.out.println("DOPO writer.close");
+            }*/
         }
+        return "redirect:/DigitalLibrary/AddImage/ImageAdded";
     }
+
+    @RequestMapping("DigitalLibrary/AddImage/ImageAdded")
+    public ModelAndView imageAdded() {
+        return new ModelAndView("ImageAdded");
+    }
+
     private String getFileName(final Part part) {
         final String partHeader = part.getHeader("content-disposition");
         for (String content : part.getHeader("content-disposition").split(";")) {
@@ -130,25 +136,6 @@ public class ImageController {
         return null;
     }
 
-    /*@RequestMapping("DigitalLibrary/AssignTranscription")
-    public ModelAndView assignTranscription() throws SQLException {
-        List<Image> imageList = Image.getNotValidatedImages();
-        List<User> transcribersList = User.getTranscribers();
-        ModelAndView mav = new ModelAndView("AssignTranscription");
-        mav.addObject("transcribersList", transcribersList);
-        mav.addObject("imageList", imageList);
-        return mav;
-    }*/
-
-    /*@PostMapping("DigitalLibrary/AssignedTranscription")
-    public ModelAndView assignedTranscription(@RequestParam int userId, int imgId) throws SQLException {
-
-
-        ModelAndView mav = new ModelAndView("NewImage");
-        mav.addObject("transcribersList", transcribersList);
-        mav.addObject("imageList", imageList);
-        return mav;
-    }*/
 }
 
 

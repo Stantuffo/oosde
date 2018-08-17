@@ -9,7 +9,9 @@ import org.thymeleaf.util.Validate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.io.IOException;
 import java.sql.*;
+import java.text.ParseException;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -233,8 +235,8 @@ public class ArtworkController {
         }
     }
 
-    @GetMapping(value= "/DigitalLibrary/Artwork/ValidateTranscription/Validate")
-    public ModelAndView validateTr(@RequestParam ("pageId") int pageId, HttpServletRequest request) throws SQLException {
+    @GetMapping(value = "/DigitalLibrary/Artwork/ValidateTranscription/Validate")
+    public ModelAndView validateTr(@RequestParam("pageId") int pageId, HttpServletRequest request) throws SQLException {
         Image img = Image.getImageById(pageId);
         ModelAndView mav = new ModelAndView("TranscriptionValidation");
         mav.addObject("img", img);
@@ -242,7 +244,7 @@ public class ArtworkController {
     }
 
     @PostMapping("/DigitalLibrary/ValidateTranscription")
-    public String validateTranscription(@RequestParam ("imgId") int imgId, @RequestParam("transcription") String transcription, HttpServletRequest request) throws SQLException {
+    public String validateTranscription(@RequestParam("imgId") int imgId, @RequestParam("transcription") String transcription, HttpServletRequest request) throws SQLException {
         Image.validateTranscription(imgId, transcription);
         return "redirect:/DigitalLibrary";
     }
@@ -262,5 +264,23 @@ public class ArtworkController {
         } else {
             return new ModelAndView("redirect:/DigitalLibrary");
         }
+    }
+
+    @GetMapping(value = "/DigitalLibrary/Artwork/ValidateImage/Validate")
+    public ModelAndView getImagesToBeValidated(@RequestParam("imgId") int imgId) throws SQLException, IOException, ParseException {
+        Image img = Image.getImageById(imgId);
+        Artwork art = Artwork.getArtworkById(img.getArtwork_id());
+        ModelAndView mav = new ModelAndView("ImageValidation");
+        mav.addObject("img", img);
+        mav.addObject("art", art);
+        mav.addObject("size", Image.getImageSize(art.getId(), img.getImg_url()));
+        mav.addObject("width", Image.getImageWidth(art.getId(), img.getImg_url()));
+        mav.addObject("height", Image.getImageHeight(art.getId(), img.getImg_url()));
+        return mav;
+    }
+    @PostMapping("/DigitalLibrary/ValidateImage")
+    public String validateImage(@RequestParam("imgId") int imgId) throws SQLException {
+        Image.validateImage(imgId);
+        return "redirect:/DigitalLibrary";
     }
 }

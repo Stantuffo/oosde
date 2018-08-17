@@ -40,7 +40,7 @@
         </div>
         <ul class="list-unstyled components">
             <p>Intestazione Menù</p>
-            <li>
+            <li class="active">
                 <a href="/DigitalLibrary">
                     <i class="fas fa-home"></i>
                     Home
@@ -58,32 +58,77 @@
                     Trascrizioni Assegnate
                 </a>
             </li>
-            <li class="active" th:if="${session.User.manager || session.User.administrator}">
-                <a class="nav-link" href="/DigitalLibrary/NewArtwork">
-                    <i class="fas fa-book"></i>
-                    Aggiungi Opera
-                </a>
+            <li th:if="${session.User.uploader || session.User.administrator}">
+                <a href="#menuInserimenti" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Menù
+                    Caricamento</a>
+                <ul class="collapse list-unstyled" id="menuInserimenti">
+                    <li th:if="${session.User.manager || session.User.administrator}">
+                        <a class="nav-link" href="/DigitalLibrary/NewArtwork">
+                            <i class="fas fa-book"></i>
+                            Aggiungi Opera
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="/DigitalLibrary/NewImage">
+                            <i class="fas fa-file-image"></i>
+                            Aggiungi Pagina ad un'Opera
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="/DigitalLibrary/NewAuthor">
+                            <i class="fas fa-user-plus"></i>
+                            Aggiungi Autore
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="/DigitalLibrary/AddTag">
+                            <i class="fas fa-tags"></i>
+                            Aggiungi Tag ad un'Opera
+                        </a>
+                    </li>
+                </ul>
             </li>
+
             <li th:if="${session.User.manager || session.User.administrator}">
-                <a class="nav-link" href="/DigitalLibrary/NewAuthor">
-                    <i class="fas fa-user-plus"></i>
-                    Aggiungi Autore
-                </a>
+                <a href="#validationMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Menù
+                    Validazioni</a>
+                <ul class="collapse list-unstyled" id="validationMenu">
+                    <li>
+                        <a class="nav-link" href="/DigitalLibrary/Artwork/ValidateImage">
+                            <i class="fas fa-check-circle"></i>
+                            Valida Immagini
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="/DigitalLibrary/Artwork/ValidateTranscription">
+                            <i class="far fa-check-circle"></i>
+                            Valida Trascrizioni
+                        </a>
+                    </li>
+                </ul>
             </li>
+
             <li th:if="${session.User.manager || session.User.administrator}">
-                <a class="nav-link" href="/DigitalLibrary/NewAuthor">
-                    <i class="fas fa-tags"></i>
-                    Aggiungi Tag ad un'Opera
-                </a>
+                <a href="#menuAssegnamento" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Menù
+                    Assegnamento</a>
+                <ul class="collapse list-unstyled" id="menuAssegnamento">
+                    <li>
+                        <a class="nav-link" href="/DigitalLibrary/AssignTranscription">
+                            <i class="fas fa-i-cursor"></i>
+                            Assegna Pagina ad un Trascrittore
+                        </a>
+                    </li>
+                </ul>
             </li>
-            <li>
+
+            <!--li>
                 <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Menù</a>
                 <ul class="collapse list-unstyled" id="pageSubmenu">
                     <li>
                         <a href="#">Sottomenù 1</a>
                     </li>
                 </ul>
-            </li>
+            </li-->
         </ul>
     </nav>
     <!-- Page Content  -->
@@ -108,8 +153,7 @@
                         </li>
                         <li>
                             <form class="form-inline my-2 my-lg-0" action="/DigitalLibrary/SearchResults">
-                                <input class="form-control mr-sm-2" type="search" name="search" id="search"
-                                       placeholder="Search"
+                                <input class="form-control mr-sm-2" type="search" name="search" id="search" placeholder="Search"
                                        aria-label="Search">
                                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                             </form>
@@ -120,12 +164,8 @@
         </nav>
         <!--CONTENUTO!!!!!-->
         <main>
-            <div class="pt-3 pb-2 mb-3">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
                 <h2>Opera aggiunta con successo!</h2>
-                <h5>L'immagine è in attesa della validazione da parte dei supervisori al caricamento delle
-                    immagini.</h5>
-                <h5>Se conforme, sarà presto disponibile all'interno della raccolta digitale.</h5>
-
             </div>
         </main>
         <!--END CONTENUTO!!!!!-->
@@ -142,8 +182,8 @@
         $a = 180;
         jQuery.fn.extend({
             rotate: function (a) {
-                $('#sidebar-arrow').css({'transform': 'rotate(' + a + 'deg)'});
-                if ($('#info').text() === ' Minimizza') {
+                $('#sidebar-arrow').css({'transform': 'rotate('+a+'deg)'});
+                if ($('#info').text()===' Minimizza') {
                     $('#info').text(' Massimizza');
                 }
                 else {
