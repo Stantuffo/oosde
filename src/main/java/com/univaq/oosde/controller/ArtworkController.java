@@ -133,7 +133,7 @@ public class ArtworkController {
                 } else {
                     statement.setNull(7, Types.VARCHAR);
                 }
-                statement.setInt(8, 0);
+                statement.setInt(8, 1);
                 statement.executeUpdate();
 
                 sql = "SELECT art_id FROM artwork ORDER BY art_id DESC LIMIT 1";
