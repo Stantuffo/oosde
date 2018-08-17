@@ -49,8 +49,7 @@
             </h3>
         </div>
         <ul class="list-unstyled components">
-            <p>Intestazione Menù</p>
-            <li class="active">
+            <li>
                 <a href="/DigitalLibrary">
                     <i class="fas fa-home"></i>
                     Home
@@ -68,7 +67,7 @@
                     Trascrizioni Assegnate
                 </a>
             </li>
-            <li th:if="${session.User.uploader || session.User.administrator}">
+            <li class="active" th:if="${session.User.uploader || session.User.administrator}">
                 <a href="#menuInserimenti" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Menù
                     Caricamento</a>
                 <ul class="collapse list-unstyled" id="menuInserimenti">
@@ -78,7 +77,7 @@
                             Aggiungi Opera
                         </a>
                     </li>
-                    <li>
+                    <li class="active">
                         <a class="nav-link" href="/DigitalLibrary/NewImage">
                             <i class="fas fa-file-image"></i>
                             Aggiungi Pagina ad un'Opera
@@ -88,12 +87,6 @@
                         <a class="nav-link" href="/DigitalLibrary/NewAuthor">
                             <i class="fas fa-user-plus"></i>
                             Aggiungi Autore
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link" href="/DigitalLibrary/AddTag">
-                            <i class="fas fa-tags"></i>
-                            Aggiungi Tag ad un'Opera
                         </a>
                     </li>
                 </ul>
@@ -130,15 +123,6 @@
                     </li>
                 </ul>
             </li>
-
-            <!--li>
-                <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Menù</a>
-                <ul class="collapse list-unstyled" id="pageSubmenu">
-                    <li>
-                        <a href="#">Sottomenù 1</a>
-                    </li>
-                </ul>
-            </li-->
         </ul>
     </nav>
     <!-- Page Content  -->

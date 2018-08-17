@@ -22,25 +22,10 @@ public class MainController {
     private AreaModel areaModel;*/
     @RequestMapping("/DigitalLibrary")
     public ModelAndView main(HttpServletRequest request) throws SQLException {
-        //DA AGGIUNGERE//
-        /*HttpSession session = request.getSession();
+        HttpSession session = request.getSession();
         if (session.getAttribute("User") == null || session.getAttribute("User").equals("")) {
             return new ModelAndView("LoginPage");
-        } else {*/
-        //FIN QUI//
-
-        //DA TOGLIERE//
-        String sql = "SELECT * FROM user WHERE usr_id = 1";
-        ConnectionClass connectionClass = new ConnectionClass();
-        Connection connection = connectionClass.getConnection();
-        Statement statement = connection.createStatement();
-        HttpSession session = request.getSession(true);
-        ResultSet resultSet = statement.executeQuery(sql);
-        if (resultSet.next()) {
-            User user = new User(resultSet);
-            session.setAttribute("User", user);
-        }
-        //FIN QUI//
+        } else {
         User user = (User) session.getAttribute("User");
         Artwork a = new Artwork();
         boolean flag = (user.isAdministrator() || user.isManager());
@@ -48,8 +33,7 @@ public class MainController {
         ModelAndView mav = new ModelAndView("DigitalLibrary");
         mav.addObject("artworks", artworks);
         return mav;
-        //DA AGGIUNGERE//
-        //}
+        }
     }
 
     @GetMapping(value = "/DigitalLibrary/SearchResults")

@@ -81,7 +81,7 @@ public class ImageController {
         response.setContentType("text/html;charset=UTF-8");
 
         // Create path components to save the file
-        final String path = request.getParameter("inputArtwork");
+        final int path = Integer.parseInt(request.getParameter("inputArtwork"));
         final Part filePart = request.getPart("file-5");
         final String fileName = getFileName(filePart);
 

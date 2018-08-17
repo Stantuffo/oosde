@@ -306,13 +306,13 @@ public class Image {
         pstmt.executeUpdate();
     }
 
-    public static void insertImage(String path, String fileName) throws SQLException {
+    public static void insertImage(int path, String fileName) throws SQLException {
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();
         String sql = "INSERT INTO image(image_url, artwork_id) VALUES (?, ?)";
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, fileName);
-        statement.setString(2, path);
+        statement.setInt(2, path);
         statement.executeUpdate();
     }
 }

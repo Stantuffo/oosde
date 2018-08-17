@@ -39,8 +39,7 @@
             </h3>
         </div>
         <ul class="list-unstyled components">
-            <p>Intestazione Menù</p>
-            <li class="active">
+            <li>
                 <a href="/DigitalLibrary">
                     <i class="fas fa-home"></i>
                     Home
@@ -80,16 +79,10 @@
                             Aggiungi Autore
                         </a>
                     </li>
-                    <li>
-                        <a class="nav-link" href="/DigitalLibrary/AddTag">
-                            <i class="fas fa-tags"></i>
-                            Aggiungi Tag ad un'Opera
-                        </a>
-                    </li>
                 </ul>
             </li>
 
-            <li th:if="${session.User.manager || session.User.administrator}">
+            <li class="active" th:if="${session.User.manager || session.User.administrator}">
                 <a href="#validationMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Menù
                     Validazioni</a>
                 <ul class="collapse list-unstyled" id="validationMenu">
@@ -99,7 +92,7 @@
                             Valida Immagini
                         </a>
                     </li>
-                    <li>
+                    <li class="active">
                         <a class="nav-link" href="/DigitalLibrary/Artwork/ValidateTranscription">
                             <i class="far fa-check-circle"></i>
                             Valida Trascrizioni
@@ -120,15 +113,6 @@
                     </li>
                 </ul>
             </li>
-
-            <!--li>
-                <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Menù</a>
-                <ul class="collapse list-unstyled" id="pageSubmenu">
-                    <li>
-                        <a href="#">Sottomenù 1</a>
-                    </li>
-                </ul>
-            </li-->
         </ul>
     </nav>
     <!-- Page Content  -->

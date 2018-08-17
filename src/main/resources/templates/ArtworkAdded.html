@@ -39,8 +39,7 @@
             </h3>
         </div>
         <ul class="list-unstyled components">
-            <p>Intestazione Menù</p>
-            <li class="active">
+            <li>
                 <a href="/DigitalLibrary">
                     <i class="fas fa-home"></i>
                     Home
@@ -62,7 +61,7 @@
                 <a href="#menuInserimenti" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Menù
                     Caricamento</a>
                 <ul class="collapse list-unstyled" id="menuInserimenti">
-                    <li th:if="${session.User.manager || session.User.administrator}">
+                    <li class="active" th:if="${session.User.manager || session.User.administrator}">
                         <a class="nav-link" href="/DigitalLibrary/NewArtwork">
                             <i class="fas fa-book"></i>
                             Aggiungi Opera
@@ -78,12 +77,6 @@
                         <a class="nav-link" href="/DigitalLibrary/NewAuthor">
                             <i class="fas fa-user-plus"></i>
                             Aggiungi Autore
-                        </a>
-                    </li>
-                    <li>
-                        <a class="nav-link" href="/DigitalLibrary/AddTag">
-                            <i class="fas fa-tags"></i>
-                            Aggiungi Tag ad un'Opera
                         </a>
                     </li>
                 </ul>
@@ -120,15 +113,6 @@
                     </li>
                 </ul>
             </li>
-
-            <!--li>
-                <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Menù</a>
-                <ul class="collapse list-unstyled" id="pageSubmenu">
-                    <li>
-                        <a href="#">Sottomenù 1</a>
-                    </li>
-                </ul>
-            </li-->
         </ul>
     </nav>
     <!-- Page Content  -->
@@ -153,7 +137,8 @@
                         </li>
                         <li>
                             <form class="form-inline my-2 my-lg-0" action="/DigitalLibrary/SearchResults">
-                                <input class="form-control mr-sm-2" type="search" name="search" id="search" placeholder="Search"
+                                <input class="form-control mr-sm-2" type="search" name="search" id="search"
+                                       placeholder="Search"
                                        aria-label="Search">
                                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                             </form>
@@ -182,8 +167,8 @@
         $a = 180;
         jQuery.fn.extend({
             rotate: function (a) {
-                $('#sidebar-arrow').css({'transform': 'rotate('+a+'deg)'});
-                if ($('#info').text()===' Minimizza') {
+                $('#sidebar-arrow').css({'transform': 'rotate(' + a + 'deg)'});
+                if ($('#info').text() === ' Minimizza') {
                     $('#info').text(' Massimizza');
                 }
                 else {
