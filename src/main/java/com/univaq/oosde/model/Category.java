@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Category {
+public class Category implements CategoryModel {
     private int id;
     private String name;
 

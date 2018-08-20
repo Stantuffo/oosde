@@ -15,15 +15,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class Image {
+public class Image implements ImageModel{
 
     private int id, artwork_id;
     private String img_url, transcription;
     private boolean img_validated, tr_validated;
 
     //Costruttore vuoto
-    public Image() {
-    }
+    public Image() {}
 
     //Costruttore che prevede tutti i campi
     public Image(int id, int artwork_id, String img_url, String transcription, boolean img_validated, boolean tr_validated) {
@@ -45,12 +44,12 @@ public class Image {
         this.setTr_validated(resultSet.getBoolean("tr_validated"));
     }
 
-
     //Getters and Setters
 
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -122,7 +121,7 @@ public class Image {
         return null;
     }
 
-    public static boolean insertTrascrizione(int imgId, String transcription) throws SQLException {
+    public boolean insertTrascrizione(int imgId, String transcription) throws SQLException {
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();
         PreparedStatement pstmt = connection.prepareStatement("UPDATE image SET transcription = (?) WHERE img_id = " + imgId);
@@ -297,6 +296,7 @@ public class Image {
 
 
     }
+
     public static void validateImage(int imgId) throws SQLException {
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();

@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Artwork {
+public class Artwork implements ArtworkModel{
     private int id, year, cat_id;
     private String isbn, title, description, language;
     private boolean published;

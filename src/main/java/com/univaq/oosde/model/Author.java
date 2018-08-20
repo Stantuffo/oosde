@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Author {
+public class Author implements AuthorModel {
 
     private int id;
     private String name, surname, birth_date, birth_place, birth_country;

@@ -1,6 +1,5 @@
 package com.univaq.oosde.model;
 
-import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 
-public class User {
+public class User implements UserModel{
     private int id, tr_level;
     private String email, name, surname, birth_date, residency, fiscal_code, qualification, profession;
     private boolean transcriber;
@@ -20,8 +19,7 @@ public class User {
     private boolean downloader;
 
     //costruttore vuoto
-    public User() {
-    }
+    public User() {}
 
     //costruttore che prevede tutti i parametri
     public User(int id, String email, String nome, String cognome, String dataNascita, String residenza, String titoloStudio, String professione, String cf, boolean transcriber, boolean uploader, boolean manager, boolean administrator, boolean request, boolean downloader, int tr_level) {
@@ -63,12 +61,12 @@ public class User {
         this.setTranscriberLevel(resultSet.getInt("tr_level"));
     }
 
-
     //Getters and Setters
 
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -76,6 +74,7 @@ public class User {
     public String getEmail() {
         return email;
     }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -184,9 +183,13 @@ public class User {
         this.downloader = downloader;
     }
 
-    public int getTranscriberLevel(){ return tr_level; }
+    public int getTranscriberLevel(){
+        return tr_level;
+    }
 
-    public void setTranscriberLevel(int tr_level) { this.tr_level = tr_level; }
+    public void setTranscriberLevel(int tr_level) {
+        this.tr_level = tr_level;
+    }
 
     public static User getUserById(int usrId) throws SQLException {
         ConnectionClass connectionClass = new ConnectionClass();
