@@ -121,7 +121,7 @@ public class Image implements ImageModel{
         return null;
     }
 
-    public boolean insertTrascrizione(int imgId, String transcription) throws SQLException {
+    public static boolean insertTrascrizione(int imgId, String transcription) throws SQLException {
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();
         PreparedStatement pstmt = connection.prepareStatement("UPDATE image SET transcription = (?) WHERE img_id = " + imgId);

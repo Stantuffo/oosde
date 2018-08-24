@@ -21,9 +21,13 @@
 <div class="container">
     <div class="login-form">
         <div class="main-div">
+            <h3 class="bordered-grey rounded pt-2 pb-2">
+                <img th:src="@{/logo.png}" width="30" height="30" class="d-inline-block align-top" alt="">
+                Digital Library
+            </h3>
             <div class="panel">
                 <h2>Login</h2>
-                <p>Please enter your email and password</p>
+                <p>Inserisci Email e Password per accedere</p>
             </div>
             <form id="Login" action="/DigitalLibrary/Login" method="POST">
                 <div class="form-group">
