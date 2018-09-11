@@ -4,8 +4,6 @@ import com.univaq.oosde.model.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.thymeleaf.util.Validate;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
@@ -20,8 +18,8 @@ public class ArtworkController {
 
     @GetMapping("DigitalLibrary/Artwork")
     public ModelAndView viewArtworkPage(@RequestParam int artId, HttpServletRequest request) throws SQLException {
-        HttpSession session = request.getSession(true);
-        if (session.getAttribute("User") == null) {
+        HttpSession session = request.getSession(false);
+        if (session == null) {
             return new ModelAndView("redirect:/DigitalLibrary");
         }
         Artwork art = Artwork.getArtworkById(artId);
@@ -29,6 +27,7 @@ public class ArtworkController {
         List<Author> authorList = Artwork.getAuthorListById(artId);
         ModelAndView mav = new ModelAndView("ArtworkOverview");
         String catName = Category.getCategoryNameById(art.getCat_id());
+        assert catName != null;
         mav.addObject("catName", catName);
         mav.addObject("artwork", art);
         mav.addObject("authorList", authorList);
@@ -38,11 +37,14 @@ public class ArtworkController {
 
     @RequestMapping("DigitalLibrary/NewArtwork")
     public ModelAndView newArtworkPage(HttpServletRequest request) throws SQLException {
-        HttpSession session = request.getSession(true);
-        User user = null;
+        HttpSession session = request.getSession(false);
+        User user;
         if (session != null) {
             user = (User) session.getAttribute("User");
+        } else {
+            return new ModelAndView("redirect:/DigitalLibrary");
         }
+        assert user != null;
         if (user.isManager() || user.isAdministrator()) {
             Author auth = new Author();
             Category cat = new Category();
@@ -52,18 +54,19 @@ public class ArtworkController {
             mav.addObject("categoryList", categoryList);
             mav.addObject("authorList", authorList);
             return mav;
-        } else {
-            return new ModelAndView("redirect:/DigitalLibrary");
-        }
+        } else return new ModelAndView("redirect:/DigitalLibrary");
     }
 
     @RequestMapping("DigitalLibrary/MyTranscriptions")
     public ModelAndView myTranscriptions(HttpServletRequest request) throws SQLException {
-        HttpSession session = request.getSession(true);
-        User user = null;
+        HttpSession session = request.getSession(false);
+        User user;
         if (session != null) {
             user = (User) session.getAttribute("User");
+        } else {
+            return new ModelAndView("redirect:/DigitalLibrary");
         }
+        assert user != null;
         if (user.isTranscriber() || user.isAdministrator()) {
             ResultSet rs = user.getTranscriptionList(user.getId());
             TreeMap<Integer, String> write_associations = new TreeMap<>();
@@ -73,18 +76,19 @@ public class ArtworkController {
             ModelAndView mav = new ModelAndView("AssignedTranscriptions");
             mav.addObject("assigned", write_associations);
             return mav;
-        } else {
-            return new ModelAndView("redirect:/DigitalLibrary");
-        }
+        } else return new ModelAndView("redirect:/DigitalLibrary");
     }
 
     @GetMapping("DigitalLibrary/MyTranscriptions/Artwork")
     public ModelAndView myArtworkTranscriptions(@RequestParam int artId, HttpServletRequest request) throws SQLException {
-        HttpSession session = request.getSession(true);
-        User user = null;
+        HttpSession session = request.getSession(false);
+        User user;
         if (session != null) {
             user = (User) session.getAttribute("User");
+        } else {
+            return new ModelAndView("redirect:/DigitalLibrary");
         }
+        assert user != null;
         if (user.isTranscriber() || user.isAdministrator()) {
             TreeMap<Integer, String> imageList = user.getTranscriptionListByArtId(artId, user.getId());
             ModelAndView mav = new ModelAndView("AssignedTranscriptionsList");
@@ -98,68 +102,43 @@ public class ArtworkController {
 
     @RequestMapping(value = "/DigitalLibrary/AddArtwork", method = RequestMethod.POST)
     public ModelAndView insertNewArtwork(@RequestParam("inputTitle") String title, @RequestParam("inputDescription") String description, @RequestParam("inputIsbn") String isbn, @RequestParam("inputYear") int year, @RequestParam("inputLanguage") String language, @RequestParam("inputCategory") int category, @RequestParam("inputAuthors") String[] author, HttpServletRequest request) throws SQLException {
-        String[] a = author;
-        HttpSession session = request.getSession(true);
-        User user = null;
+        HttpSession session = request.getSession(false);
+        User user;
         if (session != null) {
             user = (User) session.getAttribute("User");
+        } else {
+            return new ModelAndView("redirect:/DigitalLibrary");
         }
-        if (!user.isManager() || !user.isAdministrator()) {
+        assert user != null;
+        if (!user.isManager() && !user.isAdministrator()) {
             return new ModelAndView("redirect:/DigitalLibrary");
         } else {
             ConnectionClass connectionClass = new ConnectionClass();
             Connection connection = connectionClass.getConnection();
             if (title.equals("")) {
-                return new ModelAndView("redirect:/DigitalLibrary/Newrtwork");
+                return new ModelAndView("redirect:/DigitalLibrary/NewArtwork");
             } else {
-                String sql = "INSERT INTO artwork(title, description, language, year, cat_id, added_by, isbn, published) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setString(1, title);
-                statement.setString(2, description);
-                statement.setString(3, language);
-                if (year > 0) {
-                    statement.setInt(4, year);
-                } else {
-                    statement.setNull(4, Types.INTEGER);
-                }
-                if (category > 0) {
-                    statement.setInt(5, category);
-                } else {
-                    statement.setNull(5, Types.INTEGER);
-                }
-                statement.setInt(6, user.getId());
-                if (!isbn.equals("")) {
-                    statement.setString(7, isbn);
-                } else {
-                    statement.setNull(7, Types.VARCHAR);
-                }
-                statement.setInt(8, 1);
-                statement.executeUpdate();
-
-                sql = "SELECT art_id FROM artwork ORDER BY art_id DESC LIMIT 1";
-                ResultSet rs = statement.executeQuery(sql);
-                rs.next();
-                int art_id = rs.getInt("art_id");
-                for (int i = 0; i < author.length; i++) {
-                    sql = "INSERT INTO paternity(author_id, artwork_id) VALUES (?, ?)";
-                    statement = connection.prepareStatement(sql);
-                    statement.setInt(1, Integer.parseInt(author[i]));
-                    statement.setInt(2, art_id);
-                    statement.executeUpdate();
-                }
-                boolean success = (new File("C:/Users/simon/Documents/oosde/src/main/resources/static/" + art_id)).mkdirs();
-                return new ModelAndView("ArtworkAdded");
+                int usrId = user.getId();
+                int art_id = Artwork.addArtwork(connection, title, description, language, year, category, usrId, isbn);
+                boolean success = Artwork.addAuthors(art_id, author, connection);
+                if (success) {
+                    (new File("C:/Users/simon/Documents/oosde/src/main/resources/static/" + art_id)).mkdirs();
+                    return new ModelAndView("ArtworkAdded");
+                } else return new ModelAndView("ErrorInsertingArtwork");
             }
         }
     }
 
     @RequestMapping(value = "/DigitalLibrary/AssignTranscription")
     public ModelAndView assignTranscription(HttpServletRequest request) throws SQLException {
-        HttpSession session = request.getSession(true);
-        User user = null;
+        HttpSession session = request.getSession(false);
+        User user;
         if (session != null) {
             user = (User) session.getAttribute("User");
+        } else {
+            return new ModelAndView("redirect:/DigitalLibrary");
         }
+        assert user != null;
         if (user.isManager() || user.isAdministrator()) {
             List<Artwork> artworkList = Artwork.getArtworkWithNotValidatedImages();
             ModelAndView mav = new ModelAndView("ChooseArtworkForTranscription");
@@ -172,10 +151,12 @@ public class ArtworkController {
 
     @GetMapping(value = "/DigitalLibrary/AssignTranscription/ChooseTranscriber")
     public ModelAndView chooseTranscriber(@RequestParam int artId, HttpServletRequest request) throws SQLException {
-        HttpSession session = request.getSession(true);
-        User user = null;
+        HttpSession session = request.getSession(false);
+        User user;
         if (session != null) {
             user = (User) session.getAttribute("User");
+        } else {
+            return new ModelAndView("redirect:/DigitalLibrary");
         }
         if (user.isManager() || user.isAdministrator()) {
             List<Image> imageList = Image.getNotValidatedImages(artId);
@@ -194,11 +175,14 @@ public class ArtworkController {
     @PostMapping(value = "/DigitalLibrary/AssignTranscription/AssignResult")
     public ModelAndView insertAssignment(@RequestParam("inputUser") int inputUser,
                                          @RequestParam("inputImageId") int[] inputImageId, HttpServletRequest request) throws SQLException {
-        HttpSession session = request.getSession(true);
-        User user = null;
+        HttpSession session = request.getSession(false);
+        User user;
         if (session != null) {
             user = (User) session.getAttribute("User");
+        } else {
+            return new ModelAndView("redirect:/DigitalLibrary");
         }
+        assert user != null;
         if (user.isManager() || user.isAdministrator()) {
             int count = 0;
             for (int imgid : inputImageId) {
@@ -220,11 +204,14 @@ public class ArtworkController {
 
     @RequestMapping(value = "/DigitalLibrary/Artwork/ValidateTranscription")
     public ModelAndView getTranscriptionsToBeValidated(HttpServletRequest request) throws SQLException {
-        HttpSession session = request.getSession(true);
-        User user = null;
+        HttpSession session = request.getSession(false);
+        User user;
         if (session != null) {
             user = (User) session.getAttribute("User");
+        } else {
+            return new ModelAndView("redirect:/DigitalLibrary");
         }
+        assert user != null;
         if (user.isManager() || user.isAdministrator()) {
             List<Image> pages = Image.getTranscriptionsToValidate();
             ModelAndView mav = new ModelAndView("UnvalidatedTranscriptionList");
@@ -237,25 +224,36 @@ public class ArtworkController {
 
     @GetMapping(value = "/DigitalLibrary/Artwork/ValidateTranscription/Validate")
     public ModelAndView validateTr(@RequestParam("pageId") int pageId, HttpServletRequest request) throws SQLException {
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            return new ModelAndView("redirect:/DigitalLibrary");
+        }
         Image img = Image.getImageById(pageId);
         ModelAndView mav = new ModelAndView("TranscriptionValidation");
+        assert img != null;
         mav.addObject("img", img);
         return mav;
     }
 
     @PostMapping("/DigitalLibrary/ValidateTranscription")
     public String validateTranscription(@RequestParam("imgId") int imgId, @RequestParam("transcription") String transcription, HttpServletRequest request) throws SQLException {
-        Image.validateTranscription(imgId, transcription);
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            Image.validateTranscription(imgId, transcription);
+        }
         return "redirect:/DigitalLibrary";
     }
 
     @RequestMapping(value = "/DigitalLibrary/Artwork/ValidateImage")
     public ModelAndView getImagesToBeValidated(HttpServletRequest request) throws SQLException {
-        HttpSession session = request.getSession(true);
-        User user = null;
+        HttpSession session = request.getSession(false);
+        User user;
         if (session != null) {
             user = (User) session.getAttribute("User");
+        } else {
+            return new ModelAndView("redirect:/DigitalLibrary");
         }
+        assert user != null;
         if (user.isManager() || user.isAdministrator()) {
             List<Image> pages = Image.getImagesToValidate();
             ModelAndView mav = new ModelAndView("UnvalidatedImageList");
@@ -267,8 +265,13 @@ public class ArtworkController {
     }
 
     @GetMapping(value = "/DigitalLibrary/Artwork/ValidateImage/Validate")
-    public ModelAndView getImagesToBeValidated(@RequestParam("imgId") int imgId) throws SQLException, IOException, ParseException {
+    public ModelAndView getImagesToBeValidated(@RequestParam("imgId") int imgId, HttpServletRequest request) throws SQLException, IOException, ParseException {
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            return new ModelAndView("redirect:/DigitalLibrary");
+        }
         Image img = Image.getImageById(imgId);
+        assert img != null;
         Artwork art = Artwork.getArtworkById(img.getArtwork_id());
         ModelAndView mav = new ModelAndView("ImageValidation");
         mav.addObject("img", img);
@@ -278,9 +281,13 @@ public class ArtworkController {
         mav.addObject("height", Image.getImageHeight(art.getId(), img.getImg_url()));
         return mav;
     }
+
     @PostMapping("/DigitalLibrary/ValidateImage")
-    public String validateImage(@RequestParam("imgId") int imgId) throws SQLException {
-        Image.validateImage(imgId);
+    public String validateImage(@RequestParam("imgId") int imgId, HttpServletRequest request) throws SQLException {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            Image.validateImage(imgId);
+        }
         return "redirect:/DigitalLibrary";
     }
 }

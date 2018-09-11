@@ -57,7 +57,7 @@
                     Trascrizioni Assegnate
                 </a>
             </li>
-            <li class="active th:if="${session.User.uploader || session.User.administrator}">
+            <li th:if="${session.User.uploader || session.User.manager || session.User.administrator}">
                 <a href="#menuInserimenti" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Menù
                     Caricamento</a>
                 <ul class="collapse list-unstyled" id="menuInserimenti">

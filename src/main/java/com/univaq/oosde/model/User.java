@@ -1,5 +1,11 @@
 package com.univaq.oosde.model;
 
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,7 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 
-public class User implements UserModel{
+public class User implements UserModel {
     private int id, tr_level;
     private String email, name, surname, birth_date, residency, fiscal_code, qualification, profession;
     private boolean transcriber;
@@ -19,7 +25,8 @@ public class User implements UserModel{
     private boolean downloader;
 
     //costruttore vuoto
-    public User() {}
+    public User() {
+    }
 
     //costruttore che prevede tutti i parametri
     public User(int id, String email, String nome, String cognome, String dataNascita, String residenza, String titoloStudio, String professione, String cf, boolean transcriber, boolean uploader, boolean manager, boolean administrator, boolean request, boolean downloader, int tr_level) {
@@ -59,6 +66,20 @@ public class User implements UserModel{
         this.setRequest(resultSet.getBoolean("request"));
         this.setDownloader(resultSet.getBoolean("downloader"));
         this.setTranscriberLevel(resultSet.getInt("tr_level"));
+    }
+
+    public static void login(Connection connection, String email, String password) throws SQLException {
+        Statement statement = connection.createStatement();
+        String sql = "SELECT * FROM user WHERE email = '" + email + "' AND password = '" + password + "'";
+        RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
+        ServletRequestAttributes attributes = (ServletRequestAttributes) requestAttributes;
+        HttpServletRequest request = attributes.getRequest();
+        ResultSet resultSet = statement.executeQuery(sql);
+        if (resultSet.next()) {
+            User user = new User(resultSet);
+            HttpSession session = request.getSession(true);
+            session.setAttribute("User", user);
+        }
     }
 
     //Getters and Setters
@@ -183,7 +204,7 @@ public class User implements UserModel{
         this.downloader = downloader;
     }
 
-    public int getTranscriberLevel(){
+    public int getTranscriberLevel() {
         return tr_level;
     }
 
@@ -195,7 +216,7 @@ public class User implements UserModel{
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();
         Statement statement = connection.createStatement();
-        String sql = "SELECT * FROM user WHERE usr_id = "+usrId;
+        String sql = "SELECT * FROM user WHERE usr_id = " + usrId;
         ResultSet resultSet = statement.executeQuery(sql);
         resultSet.next();
         User urs = new User(resultSet);
@@ -312,7 +333,7 @@ public class User implements UserModel{
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();
         Statement statement = connection.createStatement();
-        String sql = "SELECT COUNT(w_a_id) AS esiste FROM write_assignment WHERE user_id ="+inputUser +" AND image_id ="+imgid;
+        String sql = "SELECT COUNT(w_a_id) AS esiste FROM write_assignment WHERE user_id =" + inputUser + " AND image_id =" + imgid;
         ResultSet resultSet = statement.executeQuery(sql);
         resultSet.next();
         return resultSet.getBoolean("esiste");
@@ -322,7 +343,7 @@ public class User implements UserModel{
         ConnectionClass connectionClass = new ConnectionClass();
         Connection connection = connectionClass.getConnection();
         Statement statement = connection.createStatement();
-        String sql = "INSERT INTO write_assignment (image_id, user_id) VALUES ("+imgid+","+inputUser+")";
+        String sql = "INSERT INTO write_assignment (image_id, user_id) VALUES (" + imgid + "," + inputUser + ")";
         statement.executeUpdate(sql);
     }
 }

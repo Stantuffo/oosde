@@ -58,7 +58,7 @@
                     Trascrizioni Assegnate
                 </a>
             </li>
-            <li class="active" th:if="${session.User.uploader || session.User.administrator}">
+            <li class="active" th:if="${session.User.uploader || session.User.manager || session.User.administrator}">
                 <a href="#menuInserimenti" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Menù
                     Caricamento</a>
                 <ul class="collapse list-unstyled" id="menuInserimenti">
@@ -160,24 +160,24 @@
                         <form action="/DigitalLibrary/AddArtwork" method="POST">
                             <div class="form-row">
                                 <div class="form-group col 12">
-                                    <label for="inputTitle"><strong>Titolo dell'Opera</strong></label>
+                                    <label for="inputTitle"><strong>Titolo dell'Opera</strong></label><span class="red"> *</span>
                                     <input type="text" class="form-control" id="inputTitle" name="inputTitle"
                                            placeholder="Inserisci il titolo dell'Opera" required>
                                 </div>
                                 <div class="form-group col-12">
-                                    <label for="inputDescription"><strong>Descrizione</strong></label><span class="red"> *</span>
+                                    <label for="inputDescription"><strong>Descrizione</strong></label>
                                     <textarea class="form-control" id="inputDescription" name="inputDescription"
                                               placeholder="Inserisci una descrizione dell'Opera"></textarea>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-4">
-                                    <label for="inputIsbn"><strong>Codice ISBN</strong></label><span class="red"> *</span>
+                                    <label for="inputIsbn"><strong>Codice ISBN</strong></label>
                                     <input type="text" class="form-control" id="inputIsbn" name="inputIsbn"
                                            placeholder="Inserisci un codice ISBN">
                                 </div>
                                 <div class="form-group col-4">
-                                    <label for="inputYear"><strong>Anno Opera</strong></label><span class="red"> *</span>
+                                    <label for="inputYear"><strong>Anno Opera</strong></label>
                                     <input type="number" class="form-control" id="inputYear" name="inputYear"
                                            placeholder="Inserisci la datazione dell'Opera" min="1000" max="2000" value="1500">
                                 </div>
@@ -197,7 +197,7 @@
                                     </select>
                                 </div>
                                 <div class="form-group col-6">
-                                    <label for="inputAuthors"><strong>Autore / Autori</strong></label><a href="/DigitalLibrary/NewAuthor" class=" ml-2 mb-1 pt-0 pb-0 btn btn-sm btn-primary">
+                                    <label for="inputAuthors"><strong>Autore / Autori</strong></label><span class="red"> * </span><a href="/DigitalLibrary/NewAuthor" class=" ml-2 mb-1 pt-0 pb-0 btn btn-sm btn-primary">
                                     <i class="fas fa-user-plus"></i> Nuovo Autore</a>
                                     <select multiple id="inputAuthors" name="inputAuthors" class="form-control">
                                         <option th:each="author : ${authorList}" th:value="${author.id}" th:text="${author.name + ' ' + author.surname}"></option>

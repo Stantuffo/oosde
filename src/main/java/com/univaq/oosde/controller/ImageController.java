@@ -1,47 +1,48 @@
 package com.univaq.oosde.controller;
 
-import com.univaq.oosde.model.*;
+import com.univaq.oosde.model.Artwork;
+import com.univaq.oosde.model.Image;
+import com.univaq.oosde.model.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import java.io.*;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
-import java.util.logging.Level;
 
 @Controller
 public class ImageController {
 
     @GetMapping("DigitalLibrary/Artwork/ImageDetail")
     public ModelAndView viewArtworkPage(@RequestParam int imgId, HttpServletRequest request) throws SQLException {
-        HttpSession session = request.getSession(true);
-        User user = (User) session.getAttribute("User");
-        if (user == null) {
-            return new ModelAndView("redirect: ../../../../DigitalLibrary");
-        } else {
-            Image img = Image.getImageById(imgId);
-            ModelAndView mav = new ModelAndView("ImageDetail");
-            mav.addObject("img", img);
-            return mav;
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            return new ModelAndView("redirect:/DigitalLibrary");
         }
+        Image img = Image.getImageById(imgId);
+        ModelAndView mav = new ModelAndView("ImageDetail");
+        assert img != null;
+        mav.addObject("img", img);
+        return mav;
     }
 
     @GetMapping("DigitalLibrary/MyTranscriptions/Artwork/Image")
     public ModelAndView Transcription(@RequestParam int imgId, HttpServletRequest request) throws SQLException {
-        HttpSession session = request.getSession(true);
-        User user = (User) session.getAttribute("User");
+        HttpSession session = request.getSession(false);
+        User user;
+        if (session != null) {
+            user = (User) session.getAttribute("User");
+        } else {
+            return new ModelAndView("redirect:/DigitalLibrary");
+        }
         if (user == null) {
             return new ModelAndView("redirect:/DigitalLibrary");
         } else {
@@ -112,10 +113,6 @@ public class ImageController {
             if (filecontent != null) {
                 filecontent.close();
             }
-            /*if (writer != null) {
-                writer.close();
-                System.out.println("DOPO writer.close");
-            }*/
         }
         return "redirect:/DigitalLibrary/AddImage/ImageAdded";
     }

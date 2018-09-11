@@ -1,9 +1,6 @@
 package com.univaq.oosde.model;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,6 +37,31 @@ public class Author implements AuthorModel {
     }
 
     public Author() {
+    }
+
+    public static boolean insertNewAuthor(Connection connection, String name, String surname, String birthDate, String birthPlace, String birthCountry) throws SQLException {
+        String sql = "INSERT INTO author(name, surname, birth_date, birth_place, birth_country) VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, name);
+        statement.setString(2,surname);
+        if (!birthDate.equals("")) {
+            statement.setString(3, birthDate);
+        } else {
+            statement.setNull(3, Types.DATE);
+        }
+        if (!birthPlace.equals("")) {
+            statement.setString(4, birthPlace);
+        } else {
+            statement.setNull(4, Types.VARCHAR);
+        }
+        if (!birthCountry.equals("")) {
+            statement.setString(5, birthPlace);
+        } else {
+            statement.setNull(5, Types.VARCHAR);
+        }
+        int a = statement.executeUpdate();
+        if(a > 0) return true;
+        else return false;
     }
 
     public int getId() {

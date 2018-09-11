@@ -1,9 +1,6 @@
 package com.univaq.oosde.model;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -118,9 +115,9 @@ public class Artwork implements ArtworkModel{
         Statement statement = connection.createStatement();
         String sql;
         if (!admin) {
-            sql = "SELECT * FROM artwork WHERE published = 1";
+            sql = "SELECT * FROM artwork WHERE published = 1 ORDER BY title ASC";
         } else {
-            sql = "SELECT * FROM artwork order by published ASC";
+            sql = "SELECT * FROM artwork ORDER BY published ASC";
         }
         ResultSet resultSet = statement.executeQuery(sql);
         List<Artwork> arts = new LinkedList<>();
@@ -144,8 +141,7 @@ public class Artwork implements ArtworkModel{
 
     public List<Image> getArtworkPages(int artId) throws SQLException {
         Image img = new Image();
-        List<Image> pages = img.getPagesByArtworkId(artId);
-        return pages;
+        return img.getPagesByArtworkId(artId);
     }
 
     public static List<Author> getAuthorListById(int artId) throws SQLException {
@@ -171,7 +167,6 @@ public class Artwork implements ArtworkModel{
         List<Artwork> artworkList = new LinkedList<>();
         while (resultSet.next()){
             Artwork art = new Artwork(resultSet);
-            System.out.println(art.getTitle());
             artworkList.add(art);
         }
         return artworkList;
@@ -189,5 +184,47 @@ public class Artwork implements ArtworkModel{
             artworkList.add(art);
         }
         return artworkList;
+    }
+
+    public static int addArtwork(Connection connection, String title, String description, String language, int year, int category, int usrId, String isbn) throws SQLException {
+        String sql = "INSERT INTO artwork(title, description, language, year, cat_id, added_by, isbn, published) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, title);
+        statement.setString(2, description);
+        statement.setString(3, language);
+        if (year > 0) {
+            statement.setInt(4, year);
+        } else {
+            statement.setNull(4, Types.INTEGER);
+        }
+        if (category > 0) {
+            statement.setInt(5, category);
+        } else {
+            statement.setNull(5, Types.INTEGER);
+        }
+        statement.setInt(6, usrId);
+        if (!isbn.equals("")) {
+            statement.setString(7, isbn);
+        } else {
+            statement.setNull(7, Types.VARCHAR);
+        }
+        statement.setInt(8, 0);
+        statement.executeUpdate();
+
+        sql = "SELECT art_id FROM artwork ORDER BY art_id DESC LIMIT 1";
+        ResultSet rs = statement.executeQuery(sql);
+        rs.next();
+        return rs.getInt("art_id");
+    }
+
+    public static boolean addAuthors(int art_id, String[] authorList, Connection connection) throws SQLException {
+        for (String anAuthorList : authorList) {
+            String sql = "INSERT INTO paternity(author_id, artwork_id) VALUES (?, ?)";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, Integer.parseInt(anAuthorList));
+            statement.setInt(2, art_id);
+            statement.executeUpdate();
+        }
+        return true;
     }
 }
